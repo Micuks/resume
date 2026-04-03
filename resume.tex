@@ -1,0 +1,133 @@
+\documentclass{resume}
+
+\ifdefined\resumezh
+  \newcommand{\en}[1]{}
+  \newcommand{\zh}[1]{#1}
+\else
+  \newcommand{\en}[1]{#1}
+  \newcommand{\zh}[1]{}
+\fi
+
+\zh{
+  \usepackage{xeCJK}
+  \usepackage{ifplatform}
+  \ifwindows
+    \setCJKmainfont{SimSun}
+    \setCJKsansfont{SimSun}
+    \setCJKmonofont{SimSun}
+  \else
+    \ifmacosx
+      \setCJKmainfont{Songti SC}
+      \setCJKsansfont{Songti SC}
+      \setCJKmonofont{Songti SC}
+    \else
+      \setCJKmainfont{Noto Serif CJK SC}
+      \setCJKsansfont{Noto Sans CJK SC}
+      \setCJKmonofont{Noto Sans CJK SC}
+    \fi
+  \fi
+}
+
+\begin{document}
+
+\noindent
+\begin{minipage}[t]{0.74\textwidth}
+  {\Huge\scshape \en{Qingliu Wu}\zh{吴清柳}\par}
+  \vspace{1.25ex}
+  {\ttfamily\large
+    \phone{17353675760} \textperiodcentered\
+    \email{wuql@bupt.edu.cn} \textperiodcentered\
+    \github[micuks]{https://github.com/micuks}\par
+  }
+\end{minipage}\hfill
+\begin{minipage}[t]{0.24\textwidth}
+  \raggedleft
+  \includegraphics[width=2.6cm,clip,trim=0 228 0 0]{selfie.png}
+\end{minipage}
+\vspace{0.2ex}
+
+\section{\en{Education}\zh{教育经历}}
+\en{\datedsubsection{\textbf{Beijing University of Posts and Telecommunications}, Master of Science Candidate}{09/2024 -- 06/2027}}
+\zh{\datedsubsection{\textbf{北京邮电大学}, 硕士研究生（研二）}{2024/09 -- 2027/06}}
+\begin{itemize}[parsep=0.25ex]
+	\en{\item Computer Science and Technology (academic master's track); awarded the \textbf{National Scholarship (2024-2025)}.}
+	\zh{\item 计算机科学与技术（学硕），获得\textbf{2024-2025年度国家奖学金}}
+	\en{\item Conducting research and practice in \textbf{AI4DB} at the IDMG Lab under the supervision of Prof. Yingxia Shao.}
+	\zh{\item 在IDMG实验室邵蓥侠老师指导下参与\textbf{AI4DB}方向的科研与实践}
+\end{itemize}
+\en{\datedsubsection{\textbf{Beijing University of Posts and Telecommunications}, Bachelor of Engineering}{09/2020 -- 06/2024}}
+\zh{\datedsubsection{\textbf{北京邮电大学}, 工学学士}{2020/09 -- 2024/06}}
+\begin{itemize}[parsep=0.25ex]
+	\en{\item Computer Science and Technology (Experimental Class), overall score: 91.91, rank: 29/422 (6.56\%).}
+	\zh{\item 计算机科学与技术（计算机学院实验班），综合成绩 91.91，排名 29/422 (6.56\%)。}
+\end{itemize}
+
+
+
+
+\section{\en{Projects}\zh{项目经历}}
+\href{https://github.com/Micuks}{\role{\en{SQLForge --- Text-to-SQL Fine-tuning \& Serving Infrastructure\textnormal{\normalfont\itshape{ | Python / PyTorch / QLoRA / vLLM / Docker}}}\zh{SQLForge --- Text-to-SQL 微调与推理服务基础设施\textnormal{\normalfont\itshape{ | Python / PyTorch / QLoRA / vLLM / Docker}}}}{2026.01 -- 2026.03}}
+\begin{itemize}[parsep=0.25ex]
+	\en{\item To enable natural-language database querying, built an end-to-end Text-to-SQL pipeline covering QLoRA fine-tuning (4-bit NF4), BnB quantization, and word-level KL-divergence distillation.}
+	\zh{\item 面向自然语言查询关系数据库的场景，构建端到端 Text-to-SQL 流水线，覆盖 QLoRA 微调（4-bit NF4）、BnB 量化及基于 KL 散度的词级知识蒸馏。}
+	\en{\item Fine-tuned Qwen2.5-3B-Instruct on 78K samples; on a 100-sample random held-out set, improved Exact Match (EM) from 45\% to 78\% and Execution Match (EX) from 52\% to 85\%.}
+	\zh{\item 在 78K 样本上微调 Qwen2.5-3B-Instruct，100条随机保留集上 Exact Match（EM）从 45\% 提升至 78\%，Execution Match（EX）从 52\% 提升至 85\%。}
+	\en{\item Integrated Prometheus/Grafana for latency (TTFT/TPOT), throughput, and GPU utilization monitoring.}
+	\zh{\item 基于 Prometheus 与 Grafana 对微调和推理进行观测，追踪生成延迟（TTFT/TPOT）、吞吐量及 GPU 显存利用率。}
+\end{itemize}
+
+
+\href{https://github.com/Micuks}{\role{\en{vLLM Online Inference Scheduling Optimization (Aging-SJF)\textnormal{\normalfont\itshape{ | Python / vLLM / Bash}}}\zh{vLLM 在线推理调度优化（Aging-SJF）\textnormal{\normalfont\itshape{ | Python / vLLM / Bash}}}}{2026.01 -- 2026.02}}
+\begin{itemize}[parsep=0.25ex]
+	\en{\item To address head-of-line blocking and long-tail latency in high-concurrency LLM serving, enhanced the vLLM scheduler with an Aging-SJF policy: SJF+aging joint priority, low-pressure bypass, baseline/aging-sjf pressure and load phase switching, and feature flags for A/B experiments.}
+	\zh{\item 针对高并发 LLM 推理中队头阻塞与长尾延迟问题，在 vLLM 调度器中实现 Aging-SJF 增强方案，引入 SJF+aging 联合优先级、低压旁路、baseline/aging-sjf 压力与负载相位切换以及实验特性开关。}
+	\en{\item Built a reproducible benchmark suite (random-mix workload, multi-bucket weighted sampling, baseline sweep \& A/B scripts); under high pressure (Qwen3-4B, RPS 128), improved goodput by 35.5\%, throughput by 21.0\%, and reduced p95 TTFT by 44.8\%.}
+	\zh{\item 构建可复现评测体系（random-mix 混合负载、多 bucket 权重采样、baseline sweep 与 A/B 脚本）；Qwen3-4B 高压场景（RPS 128）下 goodput 提升 35.5\%、吞吐提升 21.0\%、p95 TTFT 降低 44.8\%。}
+\end{itemize}
+
+
+\section{\en{Internship Experience}\zh{实习经历}}
+\en{\role{Flink Large-State Compute Optimization}{Huawei, Computing Product Line | AI Engineer}}
+\zh{\role{Flink 大状态计算调优}{华为·计算产品线 | AI工程师}}
+\begin{itemize}[parsep=0.25ex]
+	\en{\item To resolve RocksDB I/O bottlenecks in billion-key Flink state, designed a two-level cache for ValueState/MapState and an existence cache for MapState on Flink 1.16.3.}
+	\zh{\item 针对 Flink 大状态任务中 RocksDB 频繁 I/O 导致的性能瓶颈，基于 Apache Flink 1.16.3 设计调优方案；对 ValueState、MapState 设计双层缓存结构，并对 MapState 添加存在性缓存，提升状态读写性能；}
+	\en{\item Profiled hotspots via async-profiler; fixed redundant null accesses and RocksDB.delete in Nexmark Q5, reducing per-task overhead by 15\%.}
+	\zh{\item 借助 async-profiler 定位 Nexmark Q5 中不必要的 null 访问及 RocksDB.delete，修复后单任务额外开销降低 15\%；}
+	\en{\item Designed an existence cache for Nexmark Q11 dual-stream join scenarios, accelerating contains() and similar lookups with a 48\% per-query improvement.}
+	\zh{\item 对 Nexmark Q11 双流 Join 场景设计存在性缓存，对 contains() 等查询加速，单查询性能提升 48\%；}
+	\en{\item Validated output consistency against the RocksDB StateBackend baseline; achieved 30\% average throughput improvement on a 100M-scale Nexmark large-state subset benchmark.}
+	\zh{\item 相比 RocksDB StateBackend 基线，Nexmark 大状态子集测评在亿级数据量下吞吐平均提升 30\%。}
+\end{itemize}
+
+\section{\en{Research Experience}\zh{科研经历}}
+\role{DBPecker: A Graph-Based Compound Anomaly Diagnosis System for Distributed RDBMSs}{PVLDB 2025 Demo}
+\begin{itemize}[parsep=0.25ex]
+	\en{\item \textit{Compound anomaly diagnosis:} proposed a graph propagation method based on multi-label classification and modified PageRank for cross-layer, cross-node joint localization and ranking of anomaly signals in distributed databases under multi-fault scenarios.}
+	\zh{\item \textit{复合异常诊断：}针对分布式数据库多故障并发场景，提出基于多标签分类与改进 PageRank 的图传播方法，对异常信号进行跨层、跨节点联合定位与排序。}
+	\en{\item \textit{Root cause analysis:} constructed a directed causal graph over distributed metrics; leveraged Structural Causal Models with intervention analysis to identify and rank root-cause metrics, facilitating fault source localization.}
+	\zh{\item \textit{根因分析：}构建分布式指标间的有向因果图，基于结构因果模型与干预分析识别并排序根因指标，辅助定位故障源。}
+	\en{\item \textit{Validation:} conducted end-to-end validation on an OceanBase distributed cluster via fault injection and standard workloads.}
+	\zh{\item \textit{验证：}在 OceanBase 分布式集群上通过故障注入与标准负载进行端到端验证。}
+\end{itemize}
+
+\section{\en{Competitions}\zh{比赛经历}}
+\en{\role{The 24th China Robotics and Artificial Intelligence Competition 2022 (Baidu Apollo Urban Road Autonomous Driving Virtual Simulation)}{National First Prize}}
+\zh{\role{2022年第24届中国机器人及人工智能大赛(百度Apollo城市道路自动驾驶虚拟仿真赛)}{全国一等奖}}
+\begin{itemize}[parsep=0.25ex]
+	\en{\item Implemented HD-map-guided rule-based path planning covering 6 urban scenarios (lane keeping, traffic lights, speed limits, overtaking, obstacle avoidance, parking) on Apollo 8.0.}
+	\en{\item Applied DP/QP trajectory optimization with MPC/PID control, tuning collision avoidance, lane compliance, trajectory smoothness, and completion time metrics.}
+	\zh{\item 基于高精地图实现规则引导路径规划，覆盖车道保持、红绿灯、限速、超车、障碍物规避、泊车 6 个城市道路场景（Apollo 8.0）。}
+	\zh{\item 采用 DP/QP 轨迹优化与 MPC/PID 控制，针对碰撞、压线、轨迹平滑度、完成时间等评测指标进行调优。}
+\end{itemize}
+
+\enlargethispage{3\baselineskip}
+\section{\en{Skills}\zh{技能}}
+\en{\textbf{Languages}: C++/Python (proficient); Java/JavaScript/Go/Rust (familiar)\\
+\textbf{Tools}: Linux, Git, Docker, PyTorch, vLLM, Kubernetes\\
+\textbf{English}: IELTS 7.5 (R 8.5, L 8.5)}
+\zh{\textbf{编程语言}: C++/Python（熟练）；Java/JavaScript/Go/Rust（了解）\\
+\textbf{工具}: Linux, Git, Docker, PyTorch, vLLM, Kubernetes\\
+\textbf{英语}: 雅思 7.5（阅读 8.5，听力 8.5）}
+
+\end{document}

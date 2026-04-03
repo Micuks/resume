@@ -1,0 +1,23 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.xdv
+*.bbl
+*.blg
+*.toc
+*.lof
+*.lot
+
+# Built PDFs (CI builds these)
+resume-en.pdf
+resume-zh.pdf
+resume.pdf
+
+# System files
+.DS_Store
+._.DS_Store
