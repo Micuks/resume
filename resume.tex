@@ -68,19 +68,19 @@
 \section{\en{Projects}\zh{项目经历}}
 \href{https://github.com/Micuks}{\role{\en{SQLForge --- Text-to-SQL Agent Training \& Inference System\textnormal{\normalfont\itshape{ | Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}}\zh{SQLForge --- Text-to-SQL Agent 训练与推理系统\textnormal{\normalfont\itshape{ | Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}}}{2026.01 -- 2026.04}}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item Built an end-to-end Text-to-SQL Agent training pipeline from QLoRA fine-tuning to ReAct-format SFT and GRPO reinforcement learning, using DeepSpeed ZeRO-2 to complete full 3B-model training on a single 24GB GPU.}
-	\zh{\item 构建端到端 Text-to-SQL Agent 训练流水线：QLoRA 微调、ReAct 格式 SFT 到 GRPO 强化学习，基于 DeepSpeed ZeRO-2 在单张 24GB GPU 上完成 3B 模型全流程训练。}
-	\en{\item Designed an Agent inference framework with sandboxed SQL execution, ReAct multi-step reasoning, and fallback strategies; improved Spider benchmark Execution Match from 66.9\% to 78.6\% (+11.7pp), with Hard queries gaining +13.4pp.}
-	\zh{\item 设计 Agent 推理框架，在沙箱环境中执行 SQL，采用 ReAct 多步推理与 fallback 策略；Spider benchmark 上 Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 查询提升 +13.4pp。}
+	\en{\item To address low execution accuracy on complex Text-to-SQL queries, built an end-to-end Agent training pipeline from QLoRA fine-tuning to ReAct-format SFT and GRPO reinforcement learning, using DeepSpeed ZeRO-2 to complete full 3B-model training on a single 24GB GPU.}
+	\zh{\item 面向复杂 Text-to-SQL 查询执行正确率不足的问题，构建端到端 Agent 训练流水线：QLoRA 微调、ReAct 格式 SFT 到 GRPO 强化学习，基于 DeepSpeed ZeRO-2 在单张 24GB GPU 上完成 3B 模型全流程训练。}
+	\en{\item Designed an Agent inference framework with sandboxed SQL execution, ReAct multi-step reasoning, and fallback strategies; on Spider, improved Execution Match from 66.9\% to 78.6\% (+11.7pp), with Hard queries gaining +13.4pp.}
+	\zh{\item 设计 Agent 推理框架，在沙箱环境中执行 SQL，引入 ReAct 多步推理；Spider benchmark 上 Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 查询提升 +13.4pp。}
 \end{itemize}
 
 
-\href{https://github.com/Micuks}{\role{\en{vLLM Online Inference Scheduling Optimization (Aging-SJF)\textnormal{\normalfont\itshape{ | Python / vLLM / Bash}}}\zh{vLLM 在线推理调度优化（Aging-SJF）\textnormal{\normalfont\itshape{ | Python / vLLM / Bash}}}}{2026.01 -- 2026.02}}
+\href{https://github.com/Micuks}{\role{\en{vLLM Online Inference Scheduling Optimization\textnormal{\normalfont\itshape{ | Python / vLLM}}}\zh{vLLM 在线推理调度优化\textnormal{\normalfont\itshape{ | Python / vLLM}}}}{2026.01 -- 2026.02}}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item To address head-of-line blocking and long-tail latency in high-concurrency LLM serving, enhanced the vLLM scheduler with an Aging-SJF policy: SJF+aging joint priority, low-pressure bypass, baseline/aging-sjf pressure and load phase switching, and feature flags for A/B experiments.}
-	\zh{\item 针对高并发 LLM 推理中队头阻塞与长尾延迟问题，在 vLLM 调度器中实现 Aging-SJF 增强方案，引入 SJF+aging 联合优先级、低压旁路、baseline/aging-sjf 压力与负载相位切换以及实验特性开关。}
-	\en{\item Built a reproducible benchmark suite (random-mix workload, multi-bucket weighted sampling, baseline sweep \& A/B scripts); under high pressure (Qwen3-4B, RPS 128), improved goodput by 35.5\%, throughput by 21.0\%, and reduced p95 TTFT by 44.8\%.}
-	\zh{\item 构建可复现评测体系（random-mix 混合负载、多 bucket 权重采样、baseline sweep 与 A/B 脚本）；Qwen3-4B 高压场景（RPS 128）下 goodput 提升 35.5\%、吞吐提升 21.0\%、p95 TTFT 降低 44.8\%。}
+	\en{\item To mitigate head-of-line blocking and tail latency in high-concurrency LLM serving, replaced vLLM's default FCFS scheduler with an adaptive MLFQ design centered on SJF prioritization and low-pressure bypass, preserving baseline behavior under light load.}
+	\zh{\item 针对高并发 LLM 推理中的队头阻塞与长尾时延问题，将 vLLM 默认 FCFS 调度器改造为以 SJF 优先级和低压旁路为核心的自适应 MLFQ 方案，在轻载时保持 baseline 行为。}
+	\en{\item Built a reproducible mixed-length benchmarking pipeline (random-mix dataset, baseline sweep, A/B comparison, and plotting); under high pressure (Qwen3-4B, RPS 128), improved goodput by 35.5\%, throughput by 21.0\%, and reduced p95 TTFT by 44.8\%, while avoiding regressions at low pressure.}
+	\zh{\item 构建可复现的 mixed-length 压测体系（random-mix 数据集、baseline sweep、A/B 对比与可视化）；在 Qwen3-4B 高压场景（RPS 128）下，goodput 提升 35.5\%、吞吐提升 21.0\%、p95 TTFT 降低 44.8\%，且低压场景无明显回归。}
 \end{itemize}
 
 

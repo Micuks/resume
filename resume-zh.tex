@@ -72,15 +72,14 @@
 \section{\zh{项目经历}}
 \zh{\role{SQLForge：Text-to-SQL Agent 训练与推理系统}{2026.1 - 2026.4｜Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{构建端到端 Text-to-SQL Agent 训练流水线：QLoRA 微调、ReAct 格式 SFT 到 GRPO 强化学习，基于 DeepSpeed ZeRO-2 在单张 24GB GPU 上完成 3B 模型全流程训练。}
-	\item \zh{设计 Agent 推理框架，在沙箱环境中执行 SQL，采用 ReAct 多步推理与 fallback 策略；Spider benchmark 上 Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 查询提升 +13.4pp。}
+	\item \zh{面向复杂 Text-to-SQL 查询执行正确率不足的问题，构建端到端 Agent 训练流水线：QLoRA 微调、ReAct 格式 SFT 到 GRPO 强化学习，基于 DeepSpeed ZeRO-2 在单张 24GB GPU 上完成 3B 模型全流程训练。}
+	\item \zh{设计 Agent 推理框架，在沙箱环境中执行 SQL，引入 ReAct 多步推理与 fallback 策略；Spider benchmark 上 Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 查询提升 +13.4pp。}
 \end{itemize}
 
-\zh{\role{vLLM 在线推理调度优化（Aging-SJF）}{2026.01 - 2026.02｜Python / vLLM / Bash / GPU Serving}}
+\zh{\role{vLLM 在线推理调度优化}{2026.01 - 2026.02｜Python / vLLM / Bash / GPU Serving}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{针对高并发 LLM 推理中队头阻塞与长尾延迟问题，在 vLLM 调度器中实现 Aging-SJF 增强方案，引入 SJF+aging 联合优先级、低压旁路与实验特性开关。}
-	\item \zh{构建可复现评测体系，新增 random-mix 混合负载并系统评估吞吐、TTFT、TPOT、E2EL、goodput。}
-	\item \zh{在 Qwen3-4B 高压场景（RPS 128）下，goodput 提升35.5\%、throughput 提升21.0\%、p95 TTFT 降低44.8\%。}
+	\item \zh{针对高并发 LLM 推理中的队头阻塞与长尾时延问题，将 vLLM 默认 FCFS 调度器改造为以 SJF 优先级和低压旁路为核心的自适应 MLFQ 方案，在轻载时保持 baseline 行为。}
+	\item \zh{构建可复现的 mixed-length 压测体系（random-mix 数据集、baseline sweep、A/B 对比与可视化）；在 Qwen3-4B 高压场景（RPS 128）下，goodput 提升 35.5\%、吞吐提升 21.0\%、p95 TTFT 降低 44.8\%，且低压场景无明显回归。}
 \end{itemize}
 
 \section{\zh{实习经历}}
