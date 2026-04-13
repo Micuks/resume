@@ -70,12 +70,10 @@
 \end{itemize}
 
 \section{\zh{项目经历}}
-\zh{\role{SQLForge：Text-to-SQL 微调与推理服务基础设施}{2026.1 - 2026.3｜Python / PyTorch / vLLM / Docker}}
+\zh{\role{SQLForge：Text-to-SQL Agent 训练与推理系统}{2026.1 - 2026.4｜Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{面向自然语言查询关系数据库的场景，构建端到端 Text-to-SQL 流水线，覆盖 QLoRA 微调（4-bit NF4）、GPTQ/AWQ 量化及基于 KL 散度的词级知识蒸馏。}
-	\item \zh{在 78K 样本上微调 Qwen2.5-3B-Instruct，通过严格的保留集沙盒评测，Exact Match（EM）从 45\% 提升至 78\%，Execution Match（EX）从 52\% 提升至 85\%。}
-	\item \zh{设计双后端推理架构，支持运行时 LoRA adapter 热切换：集成 HuggingFace 用于同步调试，vLLM（Async Engine + PagedAttention）最大化生产吞吐。}
-	\item \zh{基于 Prometheus 与 Grafana 实现全面可观测性，追踪生成延迟（TTFT/TPOT）、吞吐量及 GPU 显存利用率。}
+	\item \zh{构建端到端 Text-to-SQL Agent 训练流水线：QLoRA 微调、ReAct 格式 SFT 到 GRPO 强化学习，基于 DeepSpeed ZeRO-2 在单张 24GB GPU 上完成 3B 模型全流程训练。}
+	\item \zh{设计 Agent 推理框架，在沙箱环境中执行 SQL，采用 ReAct 多步推理与 fallback 策略；Spider benchmark 上 Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 查询提升 +13.4pp。}
 \end{itemize}
 
 \zh{\role{vLLM 在线推理调度优化（Aging-SJF）}{2026.01 - 2026.02｜Python / vLLM / Bash / GPU Serving}}

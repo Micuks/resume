@@ -66,14 +66,12 @@
 
 
 \section{\en{Projects}\zh{项目经历}}
-\href{https://github.com/Micuks}{\role{\en{SQLForge --- Text-to-SQL Fine-tuning \& Serving Infrastructure\textnormal{\normalfont\itshape{ | Python / PyTorch / QLoRA / vLLM / Docker}}}\zh{SQLForge --- Text-to-SQL 微调与推理服务基础设施\textnormal{\normalfont\itshape{ | Python / PyTorch / QLoRA / vLLM / Docker}}}}{2026.01 -- 2026.03}}
+\href{https://github.com/Micuks}{\role{\en{SQLForge --- Text-to-SQL Agent Training \& Inference System\textnormal{\normalfont\itshape{ | Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}}\zh{SQLForge --- Text-to-SQL Agent 训练与推理系统\textnormal{\normalfont\itshape{ | Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}}}{2026.01 -- 2026.04}}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item To enable natural-language database querying, built an end-to-end Text-to-SQL pipeline covering QLoRA fine-tuning (4-bit NF4), BnB quantization, and word-level KL-divergence distillation.}
-	\zh{\item 面向自然语言查询关系数据库的场景，构建端到端 Text-to-SQL 流水线，覆盖 QLoRA 微调（4-bit NF4）、BnB 量化及基于 KL 散度的词级知识蒸馏。}
-	\en{\item Fine-tuned Qwen2.5-3B-Instruct on 78K samples; on a 100-sample random held-out set, improved Exact Match (EM) from 45\% to 78\% and Execution Match (EX) from 52\% to 85\%.}
-	\zh{\item 在 78K 样本上微调 Qwen2.5-3B-Instruct，100条随机保留集上 Exact Match（EM）从 45\% 提升至 78\%，Execution Match（EX）从 52\% 提升至 85\%。}
-	\en{\item Integrated Prometheus/Grafana for latency (TTFT/TPOT), throughput, and GPU utilization monitoring.}
-	\zh{\item 基于 Prometheus 与 Grafana 对微调和推理进行观测，追踪生成延迟（TTFT/TPOT）、吞吐量及 GPU 显存利用率。}
+	\en{\item Built an end-to-end Text-to-SQL Agent training pipeline from QLoRA fine-tuning to ReAct-format SFT and GRPO reinforcement learning, using DeepSpeed ZeRO-2 to complete full 3B-model training on a single 24GB GPU.}
+	\zh{\item 构建端到端 Text-to-SQL Agent 训练流水线：QLoRA 微调、ReAct 格式 SFT 到 GRPO 强化学习，基于 DeepSpeed ZeRO-2 在单张 24GB GPU 上完成 3B 模型全流程训练。}
+	\en{\item Designed an Agent inference framework with sandboxed SQL execution, ReAct multi-step reasoning, and fallback strategies; improved Spider benchmark Execution Match from 66.9\% to 78.6\% (+11.7pp), with Hard queries gaining +13.4pp.}
+	\zh{\item 设计 Agent 推理框架，在沙箱环境中执行 SQL，采用 ReAct 多步推理与 fallback 策略；Spider benchmark 上 Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 查询提升 +13.4pp。}
 \end{itemize}
 
 
