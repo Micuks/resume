@@ -18,6 +18,9 @@ resume-en.pdf
 resume-zh.pdf
 resume.pdf
 
+# Local PNG previews (make preview)
+preview/
+
 # System files
 .DS_Store
 ._.DS_Store

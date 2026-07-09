@@ -59,7 +59,6 @@
 	\item \zh{计算机科学与技术（计算机学院实验班），综合成绩: 91.91 排名: 29/422 (6.56\%)}
 	\item \zh{相关课程：编译原理与技术(93), 矩阵理论与方法(92), 大数据技术基础(\textbf{100}), 形式语言与自动机(97), 计算机网络(94), 算法设计与分析(95), 概率论与数理统计(96), 高等数学(97)}
 \end{itemize}
-\vspace{3mm}
 
 \section{\en{Projects}\zh{比赛经历}}
 
@@ -84,7 +83,15 @@
 
 \section{\zh{实习经历}}
 
-\zh{\role{Flink大状态计算调优}{华为 · 计算产品线 | AI工程师}}
+\zh{\role{多模态大模型 Keye 预训练 · Megatron 框架优化}{2026.05.25 -- 至今}}
+\zh{{\small\itshape 快手 · 基础大模型与应用部 | AI Infra}\par}
+\begin{itemize}[parsep=0.25ex]
+	\item \zh{验证 DeepSeek-V4-Flash 在 H800 上的 MXFP4/FP8 权重转换精度时，发现 HF$\to$Megatron$\to$HF 往返后权重差约 1e-3——Megatron-Core 把模型特意以 FP32 保留的一部分辅助参数降成了 BF16。定位后确认 Megatron-LM PR\#5308 是对应修复，合并验证后往返权重逐 tensor 对齐。}
+	\item \zh{根因定位并推动修复 DeepSeek-V4-Flash 在 BF16 预训练中由 fused RoPE 触发的训练 NaN——已向上游提交 issue NVIDIA/Megatron-LM\#5317（含最小复现），修复 PR 推进中。}
+\end{itemize}
+
+\zh{\role{Flink大状态计算调优}{2026.03 -- 2026.05.22}}
+\zh{{\small\itshape 华为 · 计算产品线 | AI工程师}\par}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{针对 Flink 大状态任务中 RocksDB 频繁 I/O 导致的性能瓶颈，基于 Apache Flink 1.16.3 设计调优方案，围绕状态访问、Join 查询与一致性验证展开优化。}
 	\item \zh{为 ValueState / MapState 设计双层缓存，并为 MapState 增加存在性缓存，提升状态读写性能。}
@@ -92,10 +99,8 @@
 	\item \zh{相比 RocksDB StateBackend 基线，Nexmark 大状态子集测评在亿级数据量下吞吐平均提升30\%，且保持结果一致性。}
 \end{itemize}
 
-\vspace{2mm}
-
 \section{\zh{科研经历}}
-\zh{\role{DBPecker: A Graph-Based Compound Anomaly Diagnosis System for Distributed RDBMSs}{PVLDB 2025 Demo}}
+\zh{\role{DBPecker: A Graph-Based Compound Anomaly Diagnosis System for Distributed RDBMSs}{PVLDB 2025 Demo · 共同一作}}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{针对分布式数据库中多故障并发的运维场景，在分布式集群上验证复合异常诊断方案；}
 	\item \zh{面向大规模OceanBase集群构建指标图谱，捕获节点/组件依赖关系，支持复合异常联合定位；}
@@ -103,6 +108,7 @@
 	\item \zh{负责算法优化，数据集构建，Demo方案与可视化展示设计，支撑论文展示落地。}
 \end{itemize}
 
+\enlargethispage{3\baselineskip}
 \section{\en{Skills}\zh{技能}}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{\textbf{大模型应用}:

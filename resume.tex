@@ -85,8 +85,21 @@
 
 
 \section{\en{Internship Experience}\zh{实习经历}}
-\en{\role{Flink Large-State Compute Optimization}{Huawei, Computing Product Line | AI Engineer}}
-\zh{\role{Flink 大状态计算调优}{华为·计算产品线 | AI工程师}}
+\en{\role{Pre-training Infra for the Keye Multimodal LLM (Megatron)}{2026.05.25 -- Present}}
+\zh{\role{多模态大模型 Keye 预训练 · Megatron 框架优化}{2026.05.25 -- 至今}}
+\en{{\small\itshape Kuaishou, Foundation Model \& Application Dept. | AI Infra}\par}
+\zh{{\small\itshape 快手 · 基础大模型与应用部 | AI Infra}\par}
+\begin{itemize}[parsep=0.25ex]
+	\en{\item While validating MXFP4/FP8 weight conversion for DeepSeek-V4-Flash on H800, found a HF$\to$Megatron$\to$HF round-trip drifting by $\sim$1e-3---Megatron-Core was downcasting to BF16 some auxiliary parameters the model deliberately keeps in FP32. Root-caused it and confirmed Megatron-LM PR\#5308 as the fix; the round-trip now matches tensor-for-tensor.}
+	\zh{\item 验证 DeepSeek-V4-Flash 在 H800 上的 MXFP4/FP8 权重转换精度时，发现 HF$\to$Megatron$\to$HF 往返后权重差约 1e-3——Megatron-Core 把模型特意以 FP32 保留的一部分辅助参数降成了 BF16。定位后确认 Megatron-LM PR\#5308 是对应修复，合并验证后往返权重逐 tensor 对齐。}
+	\en{\item Root-caused and am upstreaming a fix for a fused-RoPE training NaN in DeepSeek-V4-Flash (BF16 pre-training)---filed NVIDIA/Megatron-LM\#5317 with a minimal repro, fix PR in progress.}
+	\zh{\item 根因定位并推动修复 DeepSeek-V4-Flash 在 BF16 预训练中由 fused RoPE 触发的训练 NaN——已向上游提交 issue NVIDIA/Megatron-LM\#5317（含最小复现），修复 PR 推进中。}
+\end{itemize}
+
+\en{\role{Flink Large-State Compute Optimization}{2026.03 -- 2026.05.22}}
+\zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05.22}}
+\en{{\small\itshape Huawei, Computing Product Line | AI Engineer}\par}
+\zh{{\small\itshape 华为 · 计算产品线 | AI工程师}\par}
 \begin{itemize}[parsep=0.25ex]
 	\en{\item To resolve RocksDB I/O bottlenecks in billion-key Flink state, designed a two-level cache for ValueState/MapState and an existence cache for MapState on Flink 1.16.3.}
 	\zh{\item 针对 Flink 大状态任务中 RocksDB 频繁 I/O 导致的性能瓶颈，基于 Apache Flink 1.16.3 设计调优方案；对 ValueState、MapState 设计双层缓存结构，并对 MapState 添加存在性缓存，提升状态读写性能；}
@@ -99,7 +112,7 @@
 \end{itemize}
 
 \section{\en{Research Experience}\zh{科研经历}}
-\role{DBPecker: A Graph-Based Compound Anomaly Diagnosis System for Distributed RDBMSs}{PVLDB 2025 Demo}
+\role{DBPecker: A Graph-Based Compound Anomaly Diagnosis System for Distributed RDBMSs}{PVLDB 2025 Demo\en{ \textperiodcentered\ Co-first author}\zh{ · 共同一作}}
 \begin{itemize}[parsep=0.25ex]
 	\en{\item \textit{Compound anomaly diagnosis:} proposed a graph propagation method based on multi-label classification and modified PageRank for cross-layer, cross-node joint localization and ranking of anomaly signals in distributed databases under multi-fault scenarios.}
 	\zh{\item \textit{复合异常诊断：}针对分布式数据库多故障并发场景，提出基于多标签分类与改进 PageRank 的图传播方法，对异常信号进行跨层、跨节点联合定位与排序。}
