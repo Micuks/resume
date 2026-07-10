@@ -88,6 +88,7 @@
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{验证 DeepSeek-V4-Flash 在 H800 上的 MXFP4/FP8 权重转换精度时，发现 HF$\to$Megatron$\to$HF 往返后权重差约 1e-3——Megatron-Core 把模型特意以 FP32 保留的一部分辅助参数降成了 BF16。定位后确认 Megatron-LM PR\#5308 是对应修复，合并验证后往返权重逐 tensor 对齐。}
 	\item \zh{根因定位并推动修复 DeepSeek-V4-Flash 在 BF16 预训练中由 fused RoPE 触发的训练 NaN——已向上游提交 issue NVIDIA/Megatron-LM\#5317（含最小复现），修复 PR 推进中。}
+	\item \zh{构建真实训练流的 CP 数值验收链路，比较 CP=1 与 CP=N 的前向、输入梯度及全量参数梯度；BF16 全模型在真实多损失和 \texttt{sum} 压力路径下均通过精度对齐，并在 8 GPU 上完成每步 4M token 的长序列训练流稳定性验证。}
 \end{itemize}
 
 \zh{\role{Flink大状态计算调优}{2026.03 -- 2026.05.22}}
