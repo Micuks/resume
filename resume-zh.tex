@@ -50,78 +50,70 @@
 \en{\datedsubsection{\textbf{Beijing University of Posts and Telecommunications}, Master Student}{09/2023 -- Present}}
 \zh{\datedsubsection{\textbf{北京邮电大学}, 硕士研究生（研二）}{2024/09 -- 2027/06}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{计算机科学与技术（学硕），获得\textbf{2024-2025年度国家奖学金}}
-	\item \zh{在IDMG实验室邵蓥侠老师指导下参与\textbf{AI4DB}方向的科研与实践}
+	\item \zh{计算机科学与技术（学硕），获\textbf{2024--2025 年度国家奖学金}；IDMG 实验室，师从邵蓥侠老师，方向 \textbf{AI4DB}}
 \end{itemize}
 \en{\datedsubsection{\textbf{Beijing University of Posts and Telecommunications}, Bachelor of Engineering}{09/2020 -- 06/2024}}
 \zh{\datedsubsection{\textbf{北京邮电大学}, 工学学士}{2020/09 -- 2024/06}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{计算机科学与技术（计算机学院实验班），综合成绩: 91.91 排名: 29/422 (6.56\%)}
-	\item \zh{相关课程：编译原理与技术(93), 矩阵理论与方法(92), 大数据技术基础(\textbf{100}), 形式语言与自动机(97), 计算机网络(94), 算法设计与分析(95), 概率论与数理统计(96), 高等数学(97)}
-\end{itemize}
-
-\section{\en{Projects}\zh{比赛经历}}
-
-\en{\role{The 24th China Robotics and Artificial Intelligence Competition 2022 (Baidu Apollo Urban Road Autonomous Driving Virtual Simulation Competition)}{Provincial First Prize}}
-\zh{\role{2022年第24届中国机器人及人工智能大赛(百度Apollo城市道路自动驾驶虚拟仿真赛)}{全国一等奖}}
-\begin{itemize}[parsep=0.25ex]
-	\item \zh{按照赛题要求，借助高精地图元素对车辆进行规则引导的路径规划。}
-\end{itemize}
-
-\section{\zh{项目经历}}
-\zh{\role{SQLForge：Text-to-SQL Agent 训练与推理系统}{2026.1 - 2026.4｜Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}
-\begin{itemize}[parsep=0.25ex]
-	\item \zh{面向复杂 Text-to-SQL 查询执行正确率不足的问题，构建端到端 Agent 训练流水线：QLoRA 微调、ReAct 格式 SFT 到 GRPO 强化学习，基于 DeepSpeed ZeRO-2 在单张 24GB GPU 上完成 3B 模型全流程训练。}
-	\item \zh{设计 Agent 推理框架，在沙箱环境中执行 SQL，引入 ReAct 多步推理与 fallback 策略；Spider benchmark 上 Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 查询提升 +13.4pp。}
-\end{itemize}
-
-\zh{\role{vLLM 在线推理调度优化}{2026.01 - 2026.02｜Python / vLLM / Bash / GPU Serving}}
-\begin{itemize}[parsep=0.25ex]
-	\item \zh{针对高并发 LLM 推理中的队头阻塞与长尾时延问题，将 vLLM 默认 FCFS 调度器改造为以 SJF 优先级和低压旁路为核心的自适应 MLFQ 方案，在轻载时保持 baseline 行为。}
-	\item \zh{构建可复现的 mixed-length 压测体系（random-mix 数据集、baseline sweep、A/B 对比与可视化）；在 Qwen3-4B 高压场景（RPS 128）下，goodput 提升 35.5\%、吞吐提升 21.0\%、p95 TTFT 降低 44.8\%，且低压场景无明显回归。}
+	\item \zh{计算机科学与技术（计算机学院实验班），综合成绩 91.91，排名 29/422（前 6.56\%）}
+	\item \zh{核心课程：大数据技术基础（\textbf{100}）、形式语言与自动机（97）、算法设计与分析（95）、计算机网络（94）}
 \end{itemize}
 
 \section{\zh{实习经历}}
 
-\zh{\role{多模态大模型 Keye 预训练 · Megatron 框架优化}{2026.05.25 -- 至今}}
+\zh{\role{多模态大模型 Keye 预训练 · Megatron 框架优化}{2026.05 -- 至今}}
 \zh{{\small\itshape 快手 · 基础大模型与应用部 | AI Infra}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{验证 DeepSeek-V4-Flash 在 H800 上的 MXFP4/FP8 权重转换精度时，发现 HF$\to$Megatron$\to$HF 往返后权重差约 1e-3——Megatron-Core 把模型特意以 FP32 保留的一部分辅助参数降成了 BF16。定位后确认 Megatron-LM PR\#5308 是对应修复，合并验证后往返权重逐 tensor 对齐。}
-	\item \zh{根因定位并推动修复 DeepSeek-V4-Flash 在 BF16 预训练中由 fused RoPE 触发的训练 NaN——已向上游提交 issue NVIDIA/Megatron-LM\#5317（含最小复现），修复 PR 推进中。}
-	\item \zh{针对 Causal-ViT 长视频预训练的显存瓶颈，实现 GDN Ulysses Context Parallel 的 All-to-All 反向梯度对齐，以及 MoDA 时序注意力的跨分片 halo 通信，解决变长序列切分下的边界上下文与梯度缩放问题。}
-	\item \zh{构建真实训练流的 CP 数值验收链路，比较 CP=1 与 CP=N 的前向、输入梯度及全量参数梯度；BF16 全模型在真实多损失和 \texttt{sum} 压力路径下均通过精度对齐，并在 8 GPU 上完成每步 4M token 的长序列训练流稳定性验证。}
+	\item \zh{为 Causal-ViT 长视频预训练实现 Context Parallel：为 GDN 线性注意力集成 Ulysses（All-to-All 并行维度转换），为 MoDA 时序注意力实现跨分片 halo 通信，解决变长切分下的边界上下文缺失；将完整视频模型的单序列训练长度由 131K 扩展至 2M token（CP8，端到端训练验证），并面向 CP16 设计 4M token 单序列方案。}
+	\item \zh{搭建真实训练流的 CP 数值验收链路，逐项对比 CP=1 与 CP=N 的前向输出、输入梯度与全量参数梯度，BF16 全模型在 mean 归约损失路径下精度全部对齐。}
+	\item \zh{保障 DeepSeek-V4-Flash 预训练数值正确性：定位 fused RoPE 触发 BF16 训练 NaN 的根因，提交含最小复现的上游 issue（Megatron-LM\#5317）并推进修复；追查权重转换 1e-3 偏差至 FP32 参数误降 BF16，修复后逐 tensor 对齐。}
 \end{itemize}
 
-\zh{\role{Flink大状态计算调优}{2026.03 -- 2026.05.22}}
-\zh{{\small\itshape 华为 · 计算产品线 | AI工程师}\par}
+\zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05}}
+\zh{{\small\itshape 华为 · 计算产品线 | AI 工程师}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{针对 Flink 大状态任务中 RocksDB 频繁 I/O 导致的性能瓶颈，基于 Apache Flink 1.16.3 设计调优方案，围绕状态访问、Join 查询与一致性验证展开优化。}
-	\item \zh{为 ValueState / MapState 设计双层缓存，并为 MapState 增加存在性缓存，提升状态读写性能。}
-	\item \zh{借助 async-profiler 与访问打点定位 Nexmark Q5 中无效 null 访问和 RocksDB.delete，修复后单任务额外开销降低15\%；针对 Q11 双流 Join 设计存在性缓存，单查询性能提升48\%。}
-	\item \zh{相比 RocksDB StateBackend 基线，Nexmark 大状态子集测评在亿级数据量下吞吐平均提升30\%，且保持结果一致性。}
+	\item \zh{针对 Flink 大状态作业中 RocksDB 频繁 I/O 导致的性能瓶颈，基于 Apache Flink 1.16.3 为 ValueState/MapState 设计双层缓存结构，并为 MapState 增加存在性缓存，减少穿透至 RocksDB 的读写请求。}
+	\item \zh{借助 async-profiler 与访问打点定位 Nexmark Q5 中的无效 null 访问与冗余 RocksDB.delete 调用，修复后单任务额外开销降低 15\%；针对 Q11 双流 Join 应用存在性缓存加速 contains() 类查询，单查询性能提升 48\%。}
+	\item \zh{亿级数据量 Nexmark 大状态子集测评中，吞吐较 RocksDB StateBackend 基线平均提升 30\%，一致性校验通过。}
+\end{itemize}
+
+\section{\zh{项目经历}}
+\zh{\role{SQLForge：执行反馈驱动的 Text-to-SQL Agent 后训练\textnormal{\normalfont\itshape{ | QLoRA / GRPO / vLLM}}}{2026.01 -- 2026.05}}
+\begin{itemize}[parsep=0.25ex]
+	\item \zh{针对复杂 Text-to-SQL 执行正确率不足的问题，构建 Agent 后训练管线：多 teacher 蒸馏 ReAct 轨迹（真实执行结果回填 Observation，含错误恢复样本），QLoRA SFT 后接自研 GRPO 训练循环与多分量稠密 reward（格式 / 合法性 / 结构 / 执行匹配，权重随训练进度迁移）。}
+	\item \zh{设计 ReAct 多轮交互策略：模型在 SQLite 沙箱执行草稿 SQL、依据真实反馈自我修正；Spider 执行正确率（Execution Match）从 66.9\% 提升至 78.6\%（+11.7pp），Hard 难度提升 13.4pp。}
+	\item \zh{以 teacher-forced top-k 实验归因剩余错误：SFT 后 98\% 题目的 gold SQL 全程位于模型 top-50 候选内，瓶颈在解码时的候选选择；K=8 执行结果投票较单路解码 +6.5pp（CI95 [+4.6, +8.4]），验证该归因。}
+\end{itemize}
+
+\zh{\role{vLLM 在线推理调度优化\textnormal{\normalfont\itshape{ | Python / vLLM / GPU Serving}}}{2026.01 -- 2026.02}}
+\begin{itemize}[parsep=0.25ex]
+	\item \zh{针对高并发推理的队头阻塞与长尾时延，将 vLLM 默认 FCFS 调度器改造为 SJF 优先级 + 低压旁路的自适应 MLFQ 方案，并自建混合长度压测体系验证：Qwen3-4B 高压场景（RPS 128）goodput 提升 35.5\%、吞吐提升 21.0\%、p95 TTFT 降低 44.8\%，低压无回归。}
 \end{itemize}
 
 \section{\zh{科研经历}}
-\zh{\role{DBPecker: A Graph-Based Compound Anomaly Diagnosis System for Distributed RDBMSs}{PVLDB 2025 Demo · 共同一作}}
+\zh{\role{DBPecker: 分布式数据库复合异常诊断系统}{PVLDB 2025 Demo · 共同一作}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{针对分布式数据库中多故障并发的运维场景，在分布式集群上验证复合异常诊断方案；}
-	\item \zh{面向大规模OceanBase集群构建指标图谱，捕获节点/组件依赖关系，支持复合异常联合定位；}
-	\item \zh{实现因果感知的指标优先级排序模块，自动筛选关键信号并生成可执行的排障建议；}
-	\item \zh{负责算法优化，数据集构建，Demo方案与可视化展示设计，支撑论文展示落地。}
+	\item \zh{针对分布式数据库多故障并发场景，提出基于图传播的复合异常定位方法，跨层、跨节点联合定位与排序异常信号；}
+	\item \zh{构建指标间有向因果图，基于结构因果模型与干预分析排序根因指标，结合 LLM 生成排障建议；在 OceanBase 集群上通过故障注入完成端到端验证。}
 \end{itemize}
 
-\enlargethispage{3\baselineskip}
+\section{\zh{比赛经历}}
+\zh{\role{第 24 届中国机器人及人工智能大赛 · 百度 Apollo 城市道路自动驾驶虚拟仿真赛（2022）}{全国一等奖}}
+\begin{itemize}[parsep=0.25ex]
+	\item \zh{基于高精地图实现规则引导的路径规划，覆盖车道保持、红绿灯、限速、超车、障碍物规避、泊车 6 类城市道路场景；采用 DP/QP 轨迹优化与 MPC/PID 控制调优（Apollo 8.0）。}
+\end{itemize}
+
+\enlargethispage{\baselineskip}
 \section{\en{Skills}\zh{技能}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{大模型应用}:
-	熟悉GPT 5, Gemini等工具;}
-	\item \zh{\textbf{编程语言}:
-	熟悉 C++/Python，了解 Java/JavaScript/Go/Rust 等;}
-	\item \zh{\textbf{开发工具}:
-	熟悉 Linux, Git, Docker, PyTorch, cmake 等常用工具和环境。}
+	\item \zh{\textbf{大模型算法}:
+	熟悉 SFT 与 GRPO 强化学习后训练流程，有 ReAct Agent 设计、训练与评测实践;}
+	\item \zh{\textbf{大模型训练与推理}:
+	熟悉 PyTorch、Megatron-LM、DeepSpeed、vLLM，有预训练问题定位与推理优化实战经验;}
+	\item \zh{\textbf{编程语言与工具}:
+	熟练使用 C++/Python，了解 Java/Go/Rust；熟悉 Linux、Git、Docker、CMake;}
 	\item \zh{\textbf{英语水平}:
-	雅思 7.5（阅读 8.5，听力 8.5），大学英语六级 594 分。}
+	雅思 7.5（阅读 8.5、听力 8.5），大学英语六级 594 分。}
 \end{itemize}
-\vspace{5mm}
 
 \end{document}
