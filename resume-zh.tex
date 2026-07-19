@@ -87,7 +87,7 @@
 
 \zh{\role{vLLM 在线推理调度优化\textnormal{\normalfont\itshape{ | Python / vLLM / GPU Serving}}}{2026.01 -- 2026.02}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{针对高并发推理的队头阻塞与长尾时延，将 vLLM 默认 FCFS 调度器改造为 SJF 优先级 + 低压旁路的自适应 MLFQ 方案，并自建混合长度压测体系验证：Qwen3-4B 高压场景（RPS 128）goodput 提升 35.5\%、吞吐提升 21.0\%、p95 TTFT 降低 44.8\%，低压无回归。}
+	\item \zh{针对高并发推理的队头阻塞与长尾时延，将 vLLM 默认 FCFS 调度器改造为 SJF 优先级 + 低压旁路的自适应 MLFQ 方案，自建混合长度压测验证：Qwen3-4B 高压（RPS 128）goodput +35.5\%、吞吐 +21.0\%、p95 TTFT $-$44.8\%，低压无回归。}
 \end{itemize}
 
 \section{\zh{科研经历}}
@@ -100,10 +100,10 @@
 \section{\zh{比赛经历}}
 \zh{\role{第 24 届中国机器人及人工智能大赛 · 百度 Apollo 城市道路自动驾驶虚拟仿真赛（2022）}{全国一等奖}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{基于高精地图实现规则引导的路径规划，覆盖车道保持、红绿灯、限速、超车、障碍物规避、泊车 6 类城市道路场景；采用 DP/QP 轨迹优化与 MPC/PID 控制调优（Apollo 8.0）。}
+	\item \zh{基于高精地图实现规则引导的路径规划，覆盖 6 类城市道路场景；DP/QP 轨迹优化与 MPC/PID 控制调优（Apollo 8.0）。}
 \end{itemize}
 
-\enlargethispage{\baselineskip}
+\enlargethispage{2\baselineskip}
 \section{\en{Skills}\zh{技能}}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{\textbf{大模型算法}:
@@ -112,6 +112,8 @@
 	熟悉 PyTorch、Megatron-LM、DeepSpeed、vLLM，有预训练问题定位与推理优化实战经验;}
 	\item \zh{\textbf{编程语言与工具}:
 	熟练使用 C++/Python，了解 Java/Go/Rust；熟悉 Linux、Git、Docker、CMake;}
+	\item \zh{\textbf{开源贡献}:
+	DeepSpeed PR\#8141——Muon 优化器 ZeRO-1/2 reduce-scatter 支持，已合入 master;}
 	\item \zh{\textbf{英语水平}:
 	雅思 7.5（阅读 8.5、听力 8.5），大学英语六级 594 分。}
 \end{itemize}
