@@ -56,7 +56,7 @@
 \zh{\datedsubsection{\textbf{北京邮电大学}, 工学学士}{2020/09 -- 2024/06}}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{计算机科学与技术（计算机学院实验班），综合成绩 91.91，排名 29/422（前 6.56\%）}
-	\item \zh{核心课程：大数据技术基础（\textbf{100}）、形式语言与自动机（97）、算法设计与分析（95）、计算机网络（94）}
+	\item \zh{第 24 届中国机器人及人工智能大赛 · 百度 Apollo 自动驾驶虚拟仿真赛\textbf{全国一等奖}（2022）}
 \end{itemize}
 
 \section{\zh{实习经历}}
@@ -64,8 +64,10 @@
 \zh{\role{多模态大模型 Keye 预训练 · Megatron 框架优化}{2026.05 -- 至今}}
 \zh{{\small\itshape 快手 · 基础大模型与应用部 | AI Infra}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{为 Causal-ViT 长视频预训练实现 Context Parallel：为 GDN 线性注意力集成 Ulysses（All-to-All 并行维度转换），为 MoDA 时序注意力实现跨分片 halo 通信，解决变长切分下的边界上下文缺失；将完整视频模型的单序列训练长度由 131K 扩展至 2M token（CP8，端到端训练验证），并面向 CP16 设计 4M token 单序列方案。}
-	\item \zh{搭建真实训练流的 CP 数值验收链路，逐项对比 CP=1 与 CP=N 的前向输出、输入梯度与全量参数梯度，BF16 全模型在 mean 归约损失路径下精度全部对齐。}
+	\item \zh{为 Causal-ViT 长视频预训练实现 Context Parallel：为 GDN 线性注意力集成 Ulysses（All-to-All 并行维度转换），为 MoDA 时序注意力实现跨分片 halo 通信，解决变长切分下的边界上下文缺失；将单序列训练长度由 131K 扩展至 2M token（CP8，端到端验证），并面向 CP16 设计 4M token 方案；配套数值验收链路逐项对比 CP=1/CP=N 的前向、输入梯度与全量参数梯度，BF16 全模型 mean 归约路径全部对齐。}
+	\item \zh{将 MoDA 时序注意力由逐帧 Python 循环（launch-bound，GPU 空转约 80\%）重构为跨帧并行批处理，支持 batch size$>$1 的等形状 clip 分组，前反向与逐帧实现逐位对齐，单层提速 5.4×、端到端 1.28×；以 tile 分块 + halo 重投影使显存工作集与序列长度解耦，并修复短序列/切分边界下有效历史帧不足的正确性问题。}
+	\item \zh{扩展训练数据形态：实现 batch 内图文-视频混训（视频流定义 epoch、图文 replay 流循环补齐，混合比例种子化可复现、resume 一致）与图文-视频 token packing（token-budget 动态分辨率 + 跨 rank 一致的 bucket sampler 均衡打包）。}
+	\item \zh{定位 Muon 优化器与 ZeRO-1/2 reduce-scatter 的不兼容根因——Newton-Schulz 为矩阵级更新，跨分区参数矩阵在单卡上无完整归约梯度——向 DeepSpeed 上游提交修复（切片定向传播 + owner rank 冗余更新），\textbf{PR\#8141 已合入 master}。}
 	\item \zh{保障 DeepSeek-V4-Flash 预训练数值正确性：定位 fused RoPE 触发 BF16 训练 NaN 的根因，提交含最小复现的上游 issue（Megatron-LM\#5317）并推进修复；追查权重转换 1e-3 偏差至 FP32 参数误降 BF16，修复后逐 tensor 对齐。}
 \end{itemize}
 
@@ -93,14 +95,7 @@
 \section{\zh{科研经历}}
 \zh{\role{DBPecker: 分布式数据库复合异常诊断系统}{PVLDB 2025 Demo · 共同一作}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{针对分布式数据库多故障并发场景，提出基于图传播的复合异常定位方法，跨层、跨节点联合定位与排序异常信号；}
-	\item \zh{构建指标间有向因果图，基于结构因果模型与干预分析排序根因指标，结合 LLM 生成排障建议；在 OceanBase 集群上通过故障注入完成端到端验证。}
-\end{itemize}
-
-\section{\zh{比赛经历}}
-\zh{\role{第 24 届中国机器人及人工智能大赛 · 百度 Apollo 城市道路自动驾驶虚拟仿真赛（2022）}{全国一等奖}}
-\begin{itemize}[parsep=0.25ex]
-	\item \zh{基于高精地图实现规则引导的路径规划，覆盖 6 类城市道路场景；DP/QP 轨迹优化与 MPC/PID 控制调优（Apollo 8.0）。}
+	\item \zh{提出图传播复合异常定位与结构因果模型根因排序方法，跨层、跨节点定位并发异常，结合 LLM 生成排障建议；在 OceanBase 集群上通过故障注入完成端到端验证。}
 \end{itemize}
 
 \enlargethispage{2\baselineskip}
@@ -112,8 +107,6 @@
 	熟悉 PyTorch、Megatron-LM、DeepSpeed、vLLM，有预训练问题定位与推理优化实战经验;}
 	\item \zh{\textbf{编程语言与工具}:
 	熟练使用 C++/Python，了解 Java/Go/Rust；熟悉 Linux、Git、Docker、CMake;}
-	\item \zh{\textbf{开源贡献}:
-	DeepSpeed PR\#8141——Muon 优化器 ZeRO-1/2 reduce-scatter 支持，已合入 master;}
 	\item \zh{\textbf{英语水平}:
 	雅思 7.5（阅读 8.5、听力 8.5），大学英语六级 594 分。}
 \end{itemize}
