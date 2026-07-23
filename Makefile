@@ -1,4 +1,5 @@
-TEX = resume.tex
+TEX_EN = resume.tex
+TEX_ZH = resume-zh.tex
 XELATEX = xelatex -interaction=nonstopmode -halt-on-error -shell-escape
 PREVIEW_DIR = preview
 DPI = 200
@@ -7,11 +8,11 @@ DPI = 200
 
 all: en zh
 
-en: $(TEX)
-	$(XELATEX) -jobname=resume-en $(TEX)
+en: $(TEX_EN)
+	$(XELATEX) -jobname=resume-en $(TEX_EN)
 
-zh: $(TEX)
-	$(XELATEX) -jobname=resume-zh "\def\resumezh{1}\input{$(TEX)}"
+zh: $(TEX_ZH)
+	$(XELATEX) -jobname=resume-zh $(TEX_ZH)
 
 # Render compiled PDFs to per-page PNGs for remote viewing (needs poppler: brew install poppler)
 preview: en zh

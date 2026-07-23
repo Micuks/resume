@@ -1,42 +1,18 @@
 \documentclass{resume}
 
-\ifdefined\resumezh
-  \newcommand{\en}[1]{}
-  \newcommand{\zh}[1]{#1}
-\else
-  \newcommand{\en}[1]{#1}
-  \newcommand{\zh}[1]{}
-\fi
-
-\zh{
-  \usepackage{xeCJK}
-  \usepackage{ifplatform}
-  \ifwindows
-    \setCJKmainfont{SimSun}
-    \setCJKsansfont{SimSun}
-    \setCJKmonofont{SimSun}
-  \else
-    \ifmacosx
-      \setCJKmainfont{Songti SC}
-      \setCJKsansfont{Songti SC}
-      \setCJKmonofont{Songti SC}
-    \else
-      \setCJKmainfont{Noto Serif CJK SC}
-      \setCJKsansfont{Noto Sans CJK SC}
-      \setCJKmonofont{Noto Sans CJK SC}
-    \fi
-  \fi
-}
+\geometry{top=0.25in}
 
 \begin{document}
+\pagestyle{empty}
+\small
 
 \noindent
 \begin{minipage}[t]{0.74\textwidth}
-  {\Huge\scshape \en{Qingliu Wu}\zh{吴清柳}\par}
+  {\Huge\scshape Qingliu Wu\par}
   \vspace{1.25ex}
   {\ttfamily\large
     \phone{17353675760} \textperiodcentered\
-    \email{wuql@bupt.edu.cn} \textperiodcentered\
+    \email{wql@bupt.edu.cn} \textperiodcentered\
     \github[micuks]{https://github.com/micuks}\par
   }
 \end{minipage}\hfill
@@ -44,101 +20,65 @@
   \raggedleft
   \includegraphics[width=2.6cm,clip,trim=0 228 0 0]{selfie.png}
 \end{minipage}
-\vspace{0.2ex}
+\vspace{0.6ex}
 
-\section{\en{Education}\zh{教育经历}}
-\en{\datedsubsection{\textbf{Beijing University of Posts and Telecommunications}, Master of Science Candidate}{09/2024 -- 06/2027}}
-\zh{\datedsubsection{\textbf{北京邮电大学}, 硕士研究生（研二）}{2024/09 -- 2027/06}}
+\section{Education}
+\datedsubsection{\textbf{Beijing University of Posts and Telecommunications (BUPT)}}{09/2024 -- 06/2027}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item Computer Science and Technology (academic master's track); awarded the \textbf{National Scholarship (2024-2025)}.}
-	\zh{\item 计算机科学与技术（学硕），获得\textbf{2024-2025年度国家奖学金}}
-	\en{\item Conducting research and practice in \textbf{AI4DB} at the IDMG Lab under the supervision of Prof. Yingxia Shao.}
-	\zh{\item 在IDMG实验室邵蓥侠老师指导下参与\textbf{AI4DB}方向的科研与实践}
+  \item M.Sc. Candidate in Computer Science; \textbf{National Scholarship (2024--2025)}; AI4DB research at the IDMG Lab under Prof. Yingxia Shao.
 \end{itemize}
-\en{\datedsubsection{\textbf{Beijing University of Posts and Telecommunications}, Bachelor of Engineering}{09/2020 -- 06/2024}}
-\zh{\datedsubsection{\textbf{北京邮电大学}, 工学学士}{2020/09 -- 2024/06}}
+\datedsubsection{\textbf{BUPT}}{09/2020 -- 06/2024}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item Computer Science and Technology (Experimental Class), overall score: 91.91, rank: 29/422 (6.56\%).}
-	\zh{\item 计算机科学与技术（计算机学院实验班），综合成绩 91.91，排名 29/422 (6.56\%)。}
+  \item B.Eng. in Computer Science (Experimental Class); score 91.91, ranked 29/422 (top 6.56\%).
 \end{itemize}
 
+\section{Internship Experience}
 
-
-
-\section{\en{Projects}\zh{项目经历}}
-\href{https://github.com/Micuks}{\role{\en{SQLForge --- Text-to-SQL Agent Training \& Inference System\textnormal{\normalfont\itshape{ | Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}}\zh{SQLForge --- Text-to-SQL Agent 训练与推理系统\textnormal{\normalfont\itshape{ | Python / PyTorch / DeepSpeed / ReAct / GRPO / Docker}}}}{2026.01 -- 2026.04}}
+\role{Keye Multimodal Model Pre-training Infrastructure \textnormal{\normalfont\itshape{ | Megatron}}}{2026.05 -- Present}
+{\small\itshape Kuaishou, Foundation Model \& Application Dept. | AI Infra\par}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item To address low execution accuracy on complex Text-to-SQL queries, built an end-to-end Agent training pipeline from QLoRA fine-tuning to ReAct-format SFT and GRPO reinforcement learning, using DeepSpeed ZeRO-2 to complete full 3B-model training on a single 24GB GPU.}
-	\zh{\item 面向复杂 Text-to-SQL 查询执行正确率不足的问题，构建端到端 Agent 训练流水线：QLoRA 微调、ReAct 格式 SFT 到 GRPO 强化学习，基于 DeepSpeed ZeRO-2 在单张 24GB GPU 上完成 3B 模型全流程训练。}
-	\en{\item Designed an Agent inference framework with sandboxed SQL execution, ReAct multi-step reasoning, and fallback strategies; on Spider, improved Execution Match from 66.9\% to 78.6\% (+11.7pp), with Hard queries gaining +13.4pp.}
-	\zh{\item 设计 Agent 推理框架，在沙箱环境中执行 SQL，引入 ReAct 多步推理；Spider benchmark 上 Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 查询提升 +13.4pp。}
+  \item Implemented Context Parallel for Causal-ViT long-video pre-training: integrated Ulysses All-to-All for GDN linear attention and cross-shard halos for MoDA; scaled CP8 single-sequence training from 131K to 2M tokens on H-class GPUs and designed a CP16 plan for 4M tokens.
+  \item Replaced a launch-bound per-frame Python loop ($\sim$80\% GPU idle) with cross-frame batching; matched forward/backward results bitwise and achieved 5.4$\times$ layer / 1.28$\times$ end-to-end speedups. Tiled halo reprojection decoupled memory from sequence length; dependency-planned direct P2P replaced fixed one-hop $r_{i-1}$ halos, supporting short/empty shards without the $T\ge W\times sp\_size$ constraint.
+  \item Removed the CP batch-size-1 restriction caused by single-sample GDN Ulysses calls and sample-local MoDA halo/loss metadata. Designed a padding-free \texttt{PackedVisionLayout} with per-sample \texttt{cu\_seqlens} and frame ownership to drive GDN All-to-All, MoDA halos, and loss reductions; enabled mixed image-video batches and packing with BF16 numerics, loss, and grad-norm curves aligned.
+  \item Root-caused Muon incompatibility with ZeRO-1/2 reduce-scatter: matrix-level Newton-Schulz updates lacked complete reduced gradients for partitioned matrices. Upstreamed owner-directed sliced propagation and redundant owner updates to DeepSpeed; \textbf{PR\#8141 merged into master}.
+  \item Ensured DeepSeek-V4-Flash pre-training correctness: isolated fused RoPE as the source of BF16 NaNs and filed Megatron-LM\#5317 with a minimal repro; traced a $10^{-3}$ weight-conversion drift to FP32 parameters being downcast to BF16 and restored tensor-wise parity.
 \end{itemize}
 
-
-\href{https://github.com/Micuks}{\role{\en{vLLM Online Inference Scheduling Optimization\textnormal{\normalfont\itshape{ | Python / vLLM}}}\zh{vLLM 在线推理调度优化\textnormal{\normalfont\itshape{ | Python / vLLM}}}}{2026.01 -- 2026.02}}
+\role{Flink Large-State Processing Optimization}{2026.03 -- 2026.05}
+{\small\itshape Huawei, Computing Product Line | AI Engineer\par}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item To mitigate head-of-line blocking and tail latency in high-concurrency LLM serving, replaced vLLM's default FCFS scheduler with an adaptive MLFQ design centered on SJF prioritization and low-pressure bypass, preserving baseline behavior under light load.}
-	\zh{\item 针对高并发 LLM 推理中的队头阻塞与长尾时延问题，将 vLLM 默认 FCFS 调度器改造为以 SJF 优先级和低压旁路为核心的自适应 MLFQ 方案，在轻载时保持 baseline 行为。}
-	\en{\item Built a reproducible mixed-length benchmarking pipeline (random-mix dataset, baseline sweep, A/B comparison, and plotting); under high pressure (Qwen3-4B, RPS 128), improved goodput by 35.5\%, throughput by 21.0\%, and reduced p95 TTFT by 44.8\%, while avoiding regressions at low pressure.}
-	\zh{\item 构建可复现的 mixed-length 压测体系（random-mix 数据集、baseline sweep、A/B 对比与可视化）；在 Qwen3-4B 高压场景（RPS 128）下，goodput 提升 35.5\%、吞吐提升 21.0\%、p95 TTFT 降低 44.8\%，且低压场景无明显回归。}
+  \item Built two-tier caches for Flink 1.16.3 ValueState/MapState and backpressure-aware async prefetch with RocksDB MultiGet, reducing backend accesses and synchronous wait.
+  \item Pre-aggregated small state-operation batches, coalescing multiple read-modify-write requests to reduce JNI overhead.
+  \item Achieved 30\% higher average throughput than RocksDB StateBackend on a 100M-scale Nexmark large-state subset and passed CDC consistency validation.
 \end{itemize}
 
-
-\section{\en{Internship Experience}\zh{实习经历}}
-\en{\role{Pre-training Infra for the Keye Multimodal LLM (Megatron)}{2026.05.25 -- Present}}
-\zh{\role{多模态大模型 Keye 预训练 · Megatron 框架优化}{2026.05.25 -- 至今}}
-\en{{\small\itshape Kuaishou, Foundation Model \& Application Dept. | AI Infra}\par}
-\zh{{\small\itshape 快手 · 基础大模型与应用部 | AI Infra}\par}
+\section{Projects}
+\role{SQLForge: Text-to-SQL Agent Post-training \textnormal{\normalfont\itshape{ | Execution Feedback / QLoRA / GRPO}}}{2026.01 -- 2026.05}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item While validating MXFP4/FP8 weight conversion for DeepSeek-V4-Flash on H800, found a HF$\to$Megatron$\to$HF round-trip drifting by $\sim$1e-3---Megatron-Core was downcasting to BF16 some auxiliary parameters the model deliberately keeps in FP32. Root-caused it and confirmed Megatron-LM PR\#5308 as the fix; the round-trip now matches tensor-for-tensor.}
-	\zh{\item 验证 DeepSeek-V4-Flash 在 H800 上的 MXFP4/FP8 权重转换精度时，发现 HF$\to$Megatron$\to$HF 往返后权重差约 1e-3——Megatron-Core 把模型特意以 FP32 保留的一部分辅助参数降成了 BF16。定位后确认 Megatron-LM PR\#5308 是对应修复，合并验证后往返权重逐 tensor 对齐。}
-	\en{\item Root-caused and am upstreaming a fix for a fused-RoPE training NaN in DeepSeek-V4-Flash (BF16 pre-training)---filed NVIDIA/Megatron-LM\#5317 with a minimal repro, fix PR in progress.}
-	\zh{\item 根因定位并推动修复 DeepSeek-V4-Flash 在 BF16 预训练中由 fused RoPE 触发的训练 NaN——已向上游提交 issue NVIDIA/Megatron-LM\#5317（含最小复现），修复 PR 推进中。}
+  \item Built an Agent post-training pipeline with multi-teacher ReAct trajectory distillation, real SQLite observations and recovery traces, QLoRA SFT, and a custom GRPO loop with dense format/validity/structure/execution rewards.
+  \item Enabled iterative SQL execution and self-correction in a SQLite sandbox; improved Spider Execution Match from 66.9\% to 78.6\% (+11.7pp), with +13.4pp on Hard queries.
+  \item Teacher-forced top-k analysis found the gold SQL within the top-50 at every step for 98\% of cases; K=8 execution-result voting beat a single sampled rollout by 6.5pp (95\% CI: +4.6 to +8.4), identifying decoding selection as the remaining bottleneck.
 \end{itemize}
 
-\en{\role{Flink Large-State Compute Optimization}{2026.03 -- 2026.05.22}}
-\zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05.22}}
-\en{{\small\itshape Huawei, Computing Product Line | AI Engineer}\par}
-\zh{{\small\itshape 华为 · 计算产品线 | AI工程师}\par}
+\role{vLLM Online Inference Scheduling Optimization \textnormal{\normalfont\itshape{ | Python / vLLM / GPU Serving}}}{2026.01 -- 2026.02}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item To resolve RocksDB I/O bottlenecks in billion-key Flink state, designed a two-level cache for ValueState/MapState and an existence cache for MapState on Flink 1.16.3.}
-	\zh{\item 针对 Flink 大状态任务中 RocksDB 频繁 I/O 导致的性能瓶颈，基于 Apache Flink 1.16.3 设计调优方案；对 ValueState、MapState 设计双层缓存结构，并对 MapState 添加存在性缓存，提升状态读写性能；}
-	\en{\item Profiled hotspots via async-profiler; fixed redundant null accesses and RocksDB.delete in Nexmark Q5, reducing per-task overhead by 15\%.}
-	\zh{\item 借助 async-profiler 定位 Nexmark Q5 中不必要的 null 访问及 RocksDB.delete，修复后单任务额外开销降低 15\%；}
-	\en{\item Designed an existence cache for Nexmark Q11 dual-stream join scenarios, accelerating contains() and similar lookups with a 48\% per-query improvement.}
-	\zh{\item 对 Nexmark Q11 双流 Join 场景设计存在性缓存，对 contains() 等查询加速，单查询性能提升 48\%；}
-	\en{\item Validated output consistency against the RocksDB StateBackend baseline; achieved 30\% average throughput improvement on a 100M-scale Nexmark large-state subset benchmark.}
-	\zh{\item 相比 RocksDB StateBackend 基线，Nexmark 大状态子集测评在亿级数据量下吞吐平均提升 30\%。}
+  \item Replaced FCFS with an adaptive SJF-priority MLFQ plus low-load bypass to mitigate head-of-line blocking: on Qwen3-4B at RPS 128, improved goodput by 35.5\% and throughput by 21.0\%, while reducing p95 TTFT by 44.8\% with no low-load regression.
 \end{itemize}
 
-\section{\en{Research Experience}\zh{科研经历}}
-\role{DBPecker: A Graph-Based Compound Anomaly Diagnosis System for Distributed RDBMSs}{PVLDB 2025 Demo\en{ \textperiodcentered\ Co-first author}\zh{ · 共同一作}}
+\section{Research Experience}
+\role{DBPecker: Compound Anomaly Diagnosis for Distributed Databases}{PVLDB 2025 Demo \textperiodcentered\ Co-first Author}
 \begin{itemize}[parsep=0.25ex]
-	\en{\item \textit{Compound anomaly diagnosis:} proposed a graph propagation method based on multi-label classification and modified PageRank for cross-layer, cross-node joint localization and ranking of anomaly signals in distributed databases under multi-fault scenarios.}
-	\zh{\item \textit{复合异常诊断：}针对分布式数据库多故障并发场景，提出基于多标签分类与改进 PageRank 的图传播方法，对异常信号进行跨层、跨节点联合定位与排序。}
-	\en{\item \textit{Root cause analysis:} constructed a directed causal graph over distributed metrics; leveraged Structural Causal Models with intervention analysis to identify and rank root-cause metrics, facilitating fault source localization.}
-	\zh{\item \textit{根因分析：}构建分布式指标间的有向因果图，基于结构因果模型与干预分析识别并排序根因指标，辅助定位故障源。}
-	\en{\item \textit{Validation:} conducted end-to-end validation on an OceanBase distributed cluster via fault injection and standard workloads.}
-	\zh{\item \textit{验证：}在 OceanBase 分布式集群上通过故障注入与标准负载进行端到端验证。}
-\end{itemize}
-
-\section{\en{Competitions}\zh{比赛经历}}
-\en{\role{The 24th China Robotics and Artificial Intelligence Competition 2022 (Baidu Apollo Urban Road Autonomous Driving Virtual Simulation)}{National First Prize}}
-\zh{\role{2022年第24届中国机器人及人工智能大赛(百度Apollo城市道路自动驾驶虚拟仿真赛)}{全国一等奖}}
-\begin{itemize}[parsep=0.25ex]
-	\en{\item Implemented HD-map-guided rule-based path planning covering 6 urban scenarios (lane keeping, traffic lights, speed limits, overtaking, obstacle avoidance, parking) on Apollo 8.0.}
-	\en{\item Applied DP/QP trajectory optimization with MPC/PID control, tuning collision avoidance, lane compliance, trajectory smoothness, and completion time metrics.}
-	\zh{\item 基于高精地图实现规则引导路径规划，覆盖车道保持、红绿灯、限速、超车、障碍物规避、泊车 6 个城市道路场景（Apollo 8.0）。}
-	\zh{\item 采用 DP/QP 轨迹优化与 MPC/PID 控制，针对碰撞、压线、轨迹平滑度、完成时间等评测指标进行调优。}
+  \item Developed graph-propagation-based compound anomaly localization and structural-causal root-cause ranking across layers and nodes; validated end-to-end through fault injection on an OceanBase cluster and integrated LLM-generated troubleshooting guidance.
 \end{itemize}
 
 \enlargethispage{3\baselineskip}
-\section{\en{Skills}\zh{技能}}
-\en{\textbf{Languages}: C++/Python (proficient); Java/JavaScript/Go/Rust (familiar)\\
-\textbf{Tools}: Linux, Git, Docker, PyTorch, vLLM, Kubernetes\\
-\textbf{English}: IELTS 7.5 (R 8.5, L 8.5)}
-\zh{\textbf{编程语言}: C++/Python（熟练）；Java/JavaScript/Go/Rust（了解）\\
-\textbf{工具}: Linux, Git, Docker, PyTorch, vLLM, Kubernetes\\
-\textbf{英语}: 雅思 7.5（阅读 8.5，听力 8.5）}
+\section{Skills}
+\begin{itemize}[parsep=0.25ex]
+  \item \textbf{LLM Algorithms}: SFT, GRPO reinforcement learning, ReAct Agent design, training, and evaluation.
+  \item \textbf{Training \& Serving}: PyTorch, Megatron-LM, DeepSpeed, vLLM; pre-training debugging and inference optimization.
+  \item \textbf{Languages \& Tools}: C++/Python; familiar with Java/Go/Rust; Linux, Git, Docker, CMake.
+  \item \textbf{English}: IELTS 7.5 (Reading 8.5, Listening 8.5); CET-6 594.
+  \item \textbf{Other}: National First Prize, 24th China Robotics and Artificial Intelligence Competition - Baidu Apollo Autonomous Driving Simulation (2022).
+\end{itemize}
 
 \end{document}
