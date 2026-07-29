@@ -5,7 +5,9 @@ on:
     branches: [main]
     paths:
       - "resume.tex"
+      - "resume-zh.tex"
       - "resume.cls"
+      - "selfie.png"
       - "Makefile"
       - ".github/workflows/build.yml"
   workflow_dispatch:
