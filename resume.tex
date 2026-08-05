@@ -38,8 +38,9 @@
 {\small\itshape Kuaishou, Foundation Model \& Application Dept. | AI Infra\par}
 \begin{itemize}[parsep=0.25ex]
   \item Implemented Context Parallel for Causal-ViT long-video pre-training: integrated Ulysses All-to-All for GDN linear attention and cross-shard halos for MoDA; scaled CP8 single-sequence training from 131K to 2M tokens on H-class GPUs and designed a CP16 plan for 4M tokens.
-  \item Root-caused Muon incompatibility with ZeRO-1/2 reduce-scatter: matrix-level Newton-Schulz updates lacked complete reduced gradients for partitioned matrices. Upstreamed owner-directed sliced propagation and redundant owner updates to DeepSpeed; \textbf{PR\#8141 merged into master}.
+  \item Reworked MoDA temporal attention from a launch-bound per-frame Python loop with roughly 80\% GPU idle time into cross-frame batched execution, supporting shape-homogeneous clip groups with batch size$>$1 while preserving bitwise forward/backward parity; improved single-layer/end-to-end throughput by 5.4$\times$/1.28$\times$. Decoupled the memory working set from sequence length through tiled execution and halo reprojection, and replaced the fixed one-hop $W$-frame halo with bounded direct P2P transfers planned from temporal windows and frame ownership, fetching projected K/V from multiple predecessor ranks with gradient return to support short sequences and empty shards without the $T \geq W \times sp\_size$ constraint.
   \item Removed the CP batch-size-1 restriction caused by single-sample GDN Ulysses calls and sample-local MoDA halo/loss metadata. Designed a padding-free \texttt{PackedVisionLayout} with per-sample \texttt{cu\_seqlens} and frame ownership to drive GDN All-to-All, MoDA halos, and loss reductions; enabled mixed image-video batches and packing with BF16 numerics, loss, and grad-norm curves aligned.
+  \item Root-caused Muon incompatibility with ZeRO-1/2 reduce-scatter: matrix-level Newton-Schulz updates lacked complete reduced gradients for partitioned matrices. Upstreamed owner-directed sliced propagation and redundant owner updates to DeepSpeed; \textbf{PR\#8141 merged into master}.
   \item Ensured DeepSeek-V4-Flash pre-training correctness: isolated fused RoPE as the source of BF16 NaNs and filed Megatron-LM\#5317 with a minimal repro; traced a $10^{-3}$ weight-conversion drift to FP32 parameters being downcast to BF16 and restored tensor-wise parity.
 \end{itemize}
 
@@ -65,7 +66,7 @@
 \end{itemize}
 
 \section{Research Experience}
-\role{DBPecker: Compound Anomaly Diagnosis for Distributed Databases}{PVLDB 2025 Demo \textperiodcentered\ Co-first Author}
+\role{DBPecker: Compound Anomaly Diagnosis for Distributed Databases}{PVLDB 2025 \textperiodcentered\ Co-first Author}
 \begin{itemize}[parsep=0.25ex]
   \item Developed graph-propagation-based compound anomaly localization and structural-causal root-cause ranking across layers and nodes; validated end-to-end through fault injection on an OceanBase cluster and integrated LLM-generated troubleshooting guidance.
 \end{itemize}
