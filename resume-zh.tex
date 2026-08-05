@@ -81,7 +81,7 @@
 \end{itemize}
 
 \section{\zh{项目经历}}
-\zh{\role{执行反馈驱动的 Text-to-SQL Agent 后训练\textnormal{\normalfont\itshape{ | QLoRA / GRPO / vLLM}}}{2026.01 -- 2026.05}}
+\zh{\role{SQLForge：执行反馈驱动的 Text-to-SQL Agent 后训练\textnormal{\normalfont\itshape{ | QLoRA / GRPO / vLLM}}}{2026.01 -- 2026.05}}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{针对复杂 Text-to-SQL 执行正确率不足的问题，构建 Agent 后训练管线：多 teacher 蒸馏 ReAct 轨迹（真实执行结果回填 Observation，含错误恢复样本），QLoRA SFT 后接自研 GRPO 训练循环与多分量稠密 reward（格式 / 合法性 / 结构 / 执行匹配，权重随训练进度迁移）。}
 	\item \zh{设计 ReAct 多轮交互策略：模型在 SQLite 沙箱执行草稿 SQL、依据真实反馈自我修正；Spider 执行正确率（Execution Match）从 66.9\% 提升至 78.6\%（+11.7pp），Hard 难度提升 13.4pp。}
