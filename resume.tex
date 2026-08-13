@@ -37,38 +37,39 @@
 \role{Keye Multimodal Model Pre-training Infrastructure \textnormal{\normalfont\itshape{ | Megatron}}}{2026.05 -- Present}
 {\small\itshape Kuaishou, Foundation Model \& Application Dept. | AI Infra\par}
 \begin{itemize}[parsep=0.25ex]
-  \item Implemented Context Parallel for Causal-ViT long-video pre-training: integrated Ulysses All-to-All for GDN linear attention and cross-shard halos for MoDA; scaled CP8 single-sequence training from 131K to 2M tokens on H-class GPUs and designed a CP16 plan for 4M tokens.
-  \item Reworked MoDA temporal attention from a launch-bound per-frame Python loop with roughly 80\% GPU idle time into cross-frame batched execution, supporting shape-homogeneous clip groups with batch size$>$1 while preserving bitwise forward/backward parity; improved single-layer/end-to-end throughput by 5.4$\times$/1.28$\times$. Decoupled the memory working set from sequence length through tiled execution and halo reprojection, and replaced the fixed one-hop $W$-frame halo with bounded direct P2P transfers planned from temporal windows and frame ownership, fetching projected K/V from multiple predecessor ranks with gradient return to support short sequences and empty shards without the $T \geq W \times sp\_size$ constraint.
-  \item Removed the CP batch-size-1 restriction caused by single-sample GDN Ulysses calls and sample-local MoDA halo/loss metadata. Designed a padding-free \texttt{PackedVisionLayout} with per-sample \texttt{cu\_seqlens} and frame ownership to drive GDN All-to-All, MoDA halos, and loss reductions; enabled mixed image-video batches and packing with BF16 numerics, loss, and grad-norm curves aligned.
-  \item Root-caused Muon incompatibility with ZeRO-1/2 reduce-scatter: matrix-level Newton-Schulz updates lacked complete reduced gradients for partitioned matrices. Upstreamed owner-directed sliced propagation and redundant owner updates to DeepSpeed; \textbf{PR\#8141 merged into master}.
-  \item Ensured DeepSeek-V4-Flash pre-training correctness: isolated fused RoPE as the source of BF16 NaNs and filed Megatron-LM\#5317 with a minimal repro; traced a $10^{-3}$ weight-conversion drift to FP32 parameters being downcast to BF16 and restored tensor-wise parity.
+  \item \textbf{Long-context parallelism:} Implemented Context Parallel for Causal-ViT with Ulysses All-to-All for GDN and cross-shard MoDA halos; scaled CP8 single-sequence training from 131K to 2M tokens on H-class GPUs and designed CP16 for 4M tokens.
+  \item \textbf{1K-GPU training stability:} Supported Stage-2 training on 1,024 GPUs (CP8$\times$DP128, GBS 2,048, up to 2,048 frames/$\sim$2M visual tokens per sample). Traced a CP8 hang to empty short-video shards skipping a backward All-Reduce, anchored the graph to align collective sequences across ranks, and observed no recurrence in 1K-GPU training after the fix.
+  \item \textbf{MoDA compute optimization:} Replaced a launch-bound per-frame Python loop with cross-frame batching, supporting batch size$>$1 with aligned forward/backward numerics and 5.4$\times$/1.28$\times$ single-layer/end-to-end speedups; tiled execution and direct P2P halos from multiple predecessor ranks bounded the memory working set and handled short/empty shards.
+  \item \textbf{Mixed-sample packing:} Designed a padding-free \texttt{PackedVisionLayout} whose per-sample \texttt{cu\_seqlens} and frame ownership drive GDN All-to-All, MoDA halos, and loss reductions; removed the CP batch-size-1 restriction and enabled mixed image-video batches with aligned BF16 numerics, loss, and grad norms.
+  \item \textbf{Distributed optimizer:} Root-caused Muon incompatibility with ZeRO-1/2 reduce-scatter: partitioned matrices lacked the complete reduced gradients required by Newton-Schulz. Upstreamed owner-directed sliced propagation and redundant owner updates to DeepSpeed; \textbf{PR\#8141 merged into master}.
+  \item \textbf{Numerical correctness:} Isolated fused RoPE as the source of DeepSeek-V4-Flash BF16 training NaNs and filed Megatron-LM\#5317 with a minimal repro; traced a $10^{-3}$ conversion drift to FP32 parameters being downcast to BF16 and restored tensor-wise parity.
 \end{itemize}
 
 \role{Flink Large-State Processing Optimization}{2026.03 -- 2026.05}
 {\small\itshape Huawei, Computing Product Line | AI Engineer\par}
 \begin{itemize}[parsep=0.25ex]
-  \item Built two-tier caches for Flink 1.16.3 ValueState/MapState and backpressure-aware async prefetch with RocksDB MultiGet, reducing backend accesses and synchronous wait.
-  \item Pre-aggregated small state-operation batches, coalescing multiple read-modify-write requests to reduce JNI overhead.
-  \item Achieved 30\% higher average throughput than RocksDB StateBackend on a 100M-scale Nexmark large-state subset and passed CDC consistency validation.
+  \item \textbf{Caching and prefetch:} Built two-tier caches for Flink 1.16.3 ValueState/MapState and backpressure-aware RocksDB MultiGet prefetch, reducing backend accesses and synchronous waits.
+  \item \textbf{JNI overhead:} Pre-aggregated small state-operation batches and coalesced read-modify-write requests to reduce cross-language calls.
+  \item \textbf{Performance:} Achieved 30\% higher average throughput than RocksDB StateBackend on a 100M-scale Nexmark subset and passed CDC consistency validation.
 \end{itemize}
 
 \section{Projects}
 \role{SQLForge: Execution-Feedback Post-training for Text-to-SQL Agents \textnormal{\normalfont\itshape{ | QLoRA / GRPO}}}{2026.01 -- 2026.05}
 \begin{itemize}[parsep=0.25ex]
-  \item Built an Agent post-training pipeline with multi-teacher ReAct trajectory distillation, real SQLite observations and recovery traces, QLoRA SFT, and a custom GRPO loop with dense format/validity/structure/execution rewards.
-  \item Enabled iterative SQL execution and self-correction in a SQLite sandbox; improved Spider Execution Match from 66.9\% to 78.6\% (+11.7pp), with +13.4pp on Hard queries.
-  \item Teacher-forced top-k analysis found the gold SQL within the top-50 at every step for 98\% of cases; K=8 execution-result voting beat a single sampled rollout by 6.5pp (95\% CI: +4.6 to +8.4), identifying decoding selection as the remaining bottleneck.
+  \item \textbf{Agent post-training:} Distilled multi-teacher ReAct trajectories with real SQLite feedback, followed QLoRA SFT with a custom GRPO loop, and designed dense format/validity/structure/execution rewards.
+  \item \textbf{Interactive self-correction:} Executed draft SQL in a SQLite sandbox and revised it from observations; improved Spider Execution Match from 66.9\% to 78.6\% (+11.7pp), with +13.4pp on Hard queries.
+  \item \textbf{Error attribution:} Teacher-forced top-k analysis placed the gold SQL in the top-50 throughout 98\% of cases, identifying decoding selection as the bottleneck; K=8 execution-result voting beat one sampled rollout by 6.5pp (95\% CI: +4.6 to +8.4).
 \end{itemize}
 
 \role{vLLM Online Inference Scheduling Optimization \textnormal{\normalfont\itshape{ | Python / vLLM / GPU Serving}}}{2026.01 -- 2026.02}
 \begin{itemize}[parsep=0.25ex]
-  \item Replaced FCFS with an adaptive SJF-priority MLFQ plus low-load bypass to mitigate head-of-line blocking: on Qwen3-4B at RPS 128, improved goodput by 35.5\% and throughput by 21.0\%, while reducing p95 TTFT by 44.8\% with no low-load regression.
+  \item \textbf{Online scheduling:} Replaced FCFS with an adaptive SJF-priority MLFQ plus low-load bypass; on Qwen3-4B at RPS 128, improved goodput by 35.5\% and throughput by 21.0\%, reduced p95 TTFT by 44.8\%, and retained low-load performance.
 \end{itemize}
 
 \section{Research Experience}
 \role{DBPecker: Compound Anomaly Diagnosis for Distributed Databases}{PVLDB 2025 \textperiodcentered\ Co-first Author}
 \begin{itemize}[parsep=0.25ex]
-  \item Developed graph-propagation-based compound anomaly localization and structural-causal root-cause ranking across layers and nodes; validated end-to-end through fault injection on an OceanBase cluster and integrated LLM-generated troubleshooting guidance.
+  \item \textbf{Compound anomaly diagnosis:} Developed graph-propagation localization and structural-causal root-cause ranking across layers and nodes, integrated LLM-generated guidance, and validated end-to-end through fault injection on an OceanBase cluster.
 \end{itemize}
 
 \enlargethispage{3\baselineskip}

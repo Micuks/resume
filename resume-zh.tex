@@ -65,38 +65,39 @@
 \zh{\role{多模态大模型 Keye 预训练 · Megatron 框架优化}{2026.05 -- 至今}}
 \zh{{\small\itshape 快手 · 基础大模型与应用部 | AI Infra}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{为 Causal-ViT 长视频预训练实现 Context Parallel：为 GDN 线性注意力集成 Ulysses（All-to-All 并行维度转换），为 MoDA 时序注意力实现跨分片 halo 通信，补齐变长切分下的边界上下文；在 H 系列 GPU 上将 CP8 单序列训练长度从 131K 扩展至 2M token，并完成 CP16、4M token 方案设计。}
-	\item \zh{将 MoDA 时序注意力由 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧并行批处理，支持 batch size$>$1 的等形状 clip 分组，前反向逐位对齐，单层/端到端提速 5.4$\times$/1.28$\times$；以 tile 分块 + halo 重投影解耦显存工作集与序列长度；将固定从 $r_{i-1}$ 拉取 $W$ 帧的单跳 halo 改为按历史窗口与帧归属规划的有限次直连 P2P，按需从多个前序 rank 拉取投影 K/V 并回传梯度，支持短序列/空分片，解除 $T \geq W \times sp\_size$ 约束。}
-	\item \zh{针对 GDN Ulysses 单样本 mixer 调用，以及 MoDA halo 与损失归约依赖单样本元数据导致的 CP 路径 batch size$=$1 约束，设计 padding-free PackedVisionLayout，以 per-sample cu\_seqlens 和帧归属统一驱动 GDN All-to-All、MoDA halo 及损失归约，支持 batch 内图像--视频混训与 packing；BF16 下数值精度、loss 与 grad norm 曲线对齐。}
-	\item \zh{定位 Muon 优化器与 ZeRO-1/2 reduce-scatter 的不兼容根因——Newton-Schulz 为矩阵级更新，跨分区参数矩阵在单卡上无完整归约梯度——向 DeepSpeed 上游提交修复（切片定向传播 + owner rank 冗余更新），\textbf{PR\#8141 已合入 master}。}
-	\item \zh{保障 DeepSeek-V4-Flash 预训练数值正确性：定位 fused RoPE 触发 BF16 训练 NaN 的根因，提交含最小复现的上游 issue（Megatron-LM\#5317）并推进修复；追查权重转换 1e-3 偏差至 FP32 参数误降 BF16，修复后逐 tensor 对齐。}
+	\item \zh{\textbf{超长序列并行：}为 Causal-ViT 实现 Context Parallel，为 GDN 集成 Ulysses All-to-All、为 MoDA 实现跨分片 halo 通信；在 H 系列 GPU 上将 CP8 单序列训练长度从 131K 扩展至 2M token，并完成 CP16、4M token 方案设计。}
+	\item \zh{\textbf{千卡训练稳定性：}支撑 Stage-2 1,024 GPU 长视频预训练（CP8$\times$DP128、GBS 2,048、单样本最高 2,048 帧/约 2M visual tokens）；定位 CP8 短视频空分片漏发反向 All-Reduce 导致 collective 序列失配与训练 hang，通过计算图锚点统一各 rank 通信序列，修复后在千卡训练中无复现。}
+	\item \zh{\textbf{MoDA 计算优化：}将 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧批处理，支持 batch size$>$1 并保持前反向对齐，单层/端到端提速 5.4$\times$/1.28$\times$；以 tile 分块和多前序 rank 直连 P2P halo 解耦显存工作集与序列长度，支持短序列与空分片。}
+	\item \zh{\textbf{混合样本 Packing：}设计 padding-free PackedVisionLayout，以 per-sample cu\_seqlens 和帧归属统一驱动 GDN All-to-All、MoDA halo 与损失归约，解除 CP 路径 batch size$=$1 约束，支持 batch 内图像--视频混训；BF16 数值、loss 与 grad norm 曲线对齐。}
+	\item \zh{\textbf{分布式优化器：}定位 Muon 与 ZeRO-1/2 reduce-scatter 的不兼容根因——分区参数矩阵缺少 Newton-Schulz 所需的完整归约梯度；向 DeepSpeed 上游提交切片定向传播与 owner rank 冗余更新修复，\textbf{PR\#8141 已合入 master}。}
+	\item \zh{\textbf{数值正确性：}定位 DeepSeek-V4-Flash fused RoPE 触发 BF16 训练 NaN 的根因，提交 Megatron-LM\#5317 最小复现并推进修复；追查权重转换 1e-3 偏差至 FP32 参数误降 BF16，修复后逐 tensor 对齐。}
 \end{itemize}
 
 \zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05}}
 \zh{{\small\itshape 华为 · 计算产品线 | AI 工程师}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{针对 Flink 大状态作业中 RocksDB 频繁 I/O 导致的性能瓶颈，基于 Apache Flink 1.16.3 为 ValueState/MapState 设计双层缓存，并结合背压感知实现基于 MultiGet 的异步预取，减少穿透至 RocksDB 的读写请求及同步等待。}
-	\item \zh{设计小批次状态操作预聚合，将多条读--改--写请求合并执行，降低 JNI 调用开销。}
-	\item \zh{在亿级数据量的 Nexmark 大状态子集测评中，吞吐较 RocksDB StateBackend 基线平均提升 30\%，并通过 CDC 数据一致性校验。}
+	\item \zh{\textbf{缓存与预取：}针对 RocksDB 频繁 I/O 瓶颈，为 Flink 1.16.3 ValueState/MapState 设计双层缓存与背压感知的 MultiGet 异步预取，减少后端访问及同步等待。}
+	\item \zh{\textbf{JNI 开销优化：}设计小批次状态操作预聚合，将多条读--改--写请求合并执行，降低跨语言调用开销。}
+	\item \zh{\textbf{性能收益：}在亿级 Nexmark 大状态子集上较 RocksDB StateBackend 基线平均吞吐提升 30\%，并通过 CDC 数据一致性校验。}
 \end{itemize}
 
 \section{\zh{项目经历}}
 \zh{\role{SQLForge：执行反馈驱动的 Text-to-SQL Agent 后训练\textnormal{\normalfont\itshape{ | QLoRA / GRPO / vLLM}}}{2026.01 -- 2026.05}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{针对复杂 Text-to-SQL 执行正确率不足的问题，构建 Agent 后训练管线：多 teacher 蒸馏 ReAct 轨迹（真实执行结果回填 Observation，含错误恢复样本），QLoRA SFT 后接自研 GRPO 训练循环与多分量稠密 reward（格式 / 合法性 / 结构 / 执行匹配，权重随训练进度迁移）。}
-	\item \zh{设计 ReAct 多轮交互策略：模型在 SQLite 沙箱执行草稿 SQL、依据真实反馈自我修正；Spider 执行正确率（Execution Match）从 66.9\% 提升至 78.6\%（+11.7pp），Hard 难度提升 13.4pp。}
-	\item \zh{以 teacher-forced top-k 实验归因剩余错误：SFT 后 98\% 题目的 gold SQL 全程位于模型 top-50 候选内，瓶颈在解码时的候选选择；K=8 执行结果投票较单路采样 +6.5pp（CI95 [+4.6, +8.4]），验证该归因。}
+	\item \zh{\textbf{Agent 后训练：}蒸馏多 teacher ReAct 轨迹与真实 SQLite 执行反馈，经 QLoRA SFT 后接自研 GRPO 循环，并设计格式、合法性、结构与执行匹配的多分量稠密 reward。}
+	\item \zh{\textbf{交互式自纠错：}让模型在 SQLite 沙箱执行草稿 SQL 并依据 Observation 修正；Spider Execution Match 从 66.9\% 提升至 78.6\%（+11.7pp），Hard 难度提升 13.4pp。}
+	\item \zh{\textbf{错误归因：}teacher-forced top-k 实验发现 SFT 后 98\% 题目的 gold SQL 全程位于 top-50，瓶颈在解码选择；K=8 执行结果投票较单路采样 +6.5pp（CI95 [+4.6, +8.4]）。}
 \end{itemize}
 
 \zh{\role{vLLM 在线推理调度优化\textnormal{\normalfont\itshape{ | Python / vLLM / GPU Serving}}}{2026.01 -- 2026.02}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{针对高并发推理的队头阻塞与长尾时延，将 vLLM 默认 FCFS 调度器改造为 SJF 优先级 + 低压旁路的自适应 MLFQ 方案，自建混合长度压测验证：Qwen3-4B 高压（RPS 128）goodput +35.5\%、吞吐 +21.0\%、p95 TTFT $-$44.8\%，低压无回归。}
+	\item \zh{\textbf{在线调度：}针对队头阻塞与长尾时延，将 vLLM FCFS 改造为 SJF 优先级 + 低压旁路的自适应 MLFQ；Qwen3-4B 在 RPS 128 下 goodput +35.5\%、吞吐 +21.0\%、p95 TTFT $-$44.8\%，低压无回归。}
 \end{itemize}
 
 \section{\zh{科研经历}}
 \zh{\role{DBPecker: 分布式数据库复合异常诊断系统}{PVLDB 2025 · 共同一作}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{提出图传播复合异常定位与结构因果模型根因排序方法，跨层、跨节点定位并发异常，结合 LLM 生成排障建议；在 OceanBase 集群上通过故障注入完成端到端验证。}
+	\item \zh{\textbf{复合异常诊断：}提出图传播异常定位与结构因果根因排序方法，跨层、跨节点定位并发异常并结合 LLM 生成排障建议；在 OceanBase 集群上通过故障注入完成端到端验证。}
 \end{itemize}
 
 \enlargethispage{3\baselineskip}
