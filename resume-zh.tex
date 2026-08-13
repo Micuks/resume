@@ -63,45 +63,46 @@
 
 \section{\zh{实习经历}}
 
-\zh{\role{多模态大模型 Keye 预训练 · Megatron 框架优化}{2026.05 -- 至今}}
+\zh{\role{多模态大模型 Keye 预训练 · Megatron/DeepSpeed 框架优化}{2026.05 -- 至今}}
 \zh{{\small\itshape 快手 · 基础大模型与应用部 | AI Infra}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{长序列训练架构：}为 Causal-ViT 实现 Context Parallel，为 GDN 集成 Ulysses All-to-All、为 MoDA 实现跨分片 halo 通信；结合 padding-free \texttt{PackedVisionLayout} 统一图像--视频混训的分片与损失归约，解除 CP 路径 batch size$=$1 限制，将 CP8 单样本训练长度从 131K 扩展至 2M visual tokens。}
-	\item \zh{\textbf{千卡训练稳定性：}支撑 Stage-2 1,024 GPU 长视频预训练（CP8$\times$DP128、GBS 2,048、单样本最高 2,048 帧/约 2M visual tokens）；定位 CP8 短视频空分片漏发反向 All-Reduce 导致 collective 序列失配与训练 hang，通过计算图锚点统一各 rank 通信序列，修复后在千卡训练中无复现。}
-	\item \zh{\textbf{MoDA 计算优化：}将 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧批处理，支持 batch size$>$1，单层/端到端提速 5.4$\times$/1.28$\times$；进一步设计 chunked packed MoDA，按 QKV、gate、attention 与 output 分阶段切分中间张量以降低显存峰值，并完成 BF16 单层 MoDA 前向、输入梯度与参数梯度对齐；鉴于 Muon 更新对微小数值扰动敏感，不以单步更新逐位一致为门槛，真实训练 eval 表现无下降。}
-	\item \zh{\textbf{工程正确性：}构建真实训练流的 CP=1 golden reference，逐项比较 CP=N 的前向、输入梯度与全量权重梯度；BF16 全模型在真实多损失及 \texttt{sum} 压力路径下通过对齐，并在 8 GPU 上完成每步 4M token 稳定性验证；同时定位 fused RoPE 触发 BF16 NaN 及权重转换误降精度问题。}
+	\item \zh{\textbf{实现长序列训练架构：}为 Causal-ViT 实现 Context Parallel，为 GDN 实现 Ulysses All-to-All、为 MoDA 时序注意力实现跨分片 halo 通信；支持图片--视频混训，实现两者的混训的分片与损失归约，解除 CP 路径 batch size$=$1 限制，将 CP8 单样本训练长度从 131K 扩展至 2M visual tokens。}
+	\item \zh{\textbf{支撑千卡训练稳定性：}支撑 Stage-2 千卡长视频预训练（CP8$\times$DP128、GBS 2,048、单样本最高 2,048 帧/约 2M visual tokens）；定位 CP8 短视频空分片漏发反向 All-Reduce 导致 collective 序列失配与训练 hang，通过计算图锚点统一各 rank 通信序列，修复后在千卡训练中无复现。}
+	\item \zh{\textbf{MoDA 计算性能优化：}将 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧批处理，支持 batch size$>$1，单层/端到端提速 5.4$\times$/1.28$\times$；进一步设计 chunked packed MoDA，按 QKV、gate、attention 与 output 分阶段切分中间张量配合反向传播重算，在显存峰值小幅增加，仍旧支持 2M 序列训练的同时，单层提速 3.36x，并完成 BF16 单层 MoDA 前反梯度对齐，真实训练 eval 表现无下降。}
 	\item \zh{\textbf{分布式优化器：}定位 Muon 与 ZeRO-1/2 reduce-scatter 的不兼容根因——分区参数矩阵缺少 Newton-Schulz 所需的完整归约梯度；向 DeepSpeed 上游提交切片定向传播与 owner rank 冗余更新修复，\textbf{PR\#8141 已合入 master}。}
+	\item \zh{\textbf{工程正确性：}保障 DeepSeek-V4-Flash 预训练数值正确性：定位 fused RoPE 触发 BF16 训练 NaN 的根因，提交含最小复现的上游 issue（Megatron-LM\#5318）并推进修复。}
 \end{itemize}
 
 \zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05}}
 \zh{{\small\itshape 华为 · 计算产品线 | AI 工程师}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{状态访问链路重构：}面向 Flink 1.16.3 + RocksDB 大状态场景，构建 Value/Map 双层堆内缓存与 MapState EMPTY/SINGLE 快照；进一步以 Mailbox 攒批驱动 MultiGet 异步预取和同 key 本地预聚合，并在 MemTable/SST 前加入 whole-key Bloom miss gate，系统性减少序列化、JNI 往返与无效 block read。}
-	\item \zh{\textbf{跨平台性能验收：}在 100M records、15 个 Nexmark queries、8 TM/16 slots 的完整栈对比中，较 RocksDB StateBackend 的逐 Query 平均吞吐在 x86/鲲鹏分别提升 61.77\%/42.79\%；鲲鹏 matched-stack 三轮消融中 Bloom 独立增益 11.08\%，保留负收益 query 并以写失效、barrier flush 与 RocksDB 权威副本约束一致性。}
+	\item \zh{\textbf{状态访问链路优化：}面向 Flink 1.16.3 + RocksDB 大状态场景，构建 Value/Map 双层堆内缓存与 MapState EMPTY/SINGLE 快照；进一步以 Mailbox 攒批驱动 MultiGet 异步预取和同 key 本地预聚合，并在 MemTable/SST 前加入 whole-key Bloom miss gate，系统性减少序列化、JNI 往返与无效读取。}
+	\item \zh{\textbf{在鲲鹏平台取得显著性能收益：}在亿级数据量下对 Nexmark 评测中，较 RocksDB StateBackend 的逐 Query 平均吞吐在鲲鹏平台提升 50\%，并通过 CDC 数据一致性检验。}
 \end{itemize}
 
 \section{\zh{项目经历}}
 \zh{\role{SQLForge：执行反馈驱动的 Text-to-SQL Agent 后训练\textnormal{\normalfont\itshape{ | QLoRA / GRPO / vLLM}}}{2026.01 -- 2026.05}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{执行反馈后训练：}生成多 teacher ReAct 轨迹，并以真实 SQLite 执行结果重写每一步 Observation；基于 DeepSpeed ZeRO-2 完成 ReAct SFT，并实现由格式、合法性、结构、部分执行匹配与最终正确性组成的 GRPO 稠密奖励实验链。}
-	\item \zh{\textbf{交互式自纠错：}设计 Direct SQL + 执行失败后 Interactive ReAct fallback，在沙箱中执行草稿 SQL 并依据 Observation 继续修正；Spider validation 200 题 Execution Match 达 78.6\%，较 ReAct SFT direct-only 的 71.7\% 提升 6.9pp。}
+	\item \zh{\textbf{执行反馈后训练：}针对复杂 Text-to-SQL 执行正确率不足的问题，构建 Agent 后训练管线：生成多 teacher ReAct 轨迹（真实执行结果回填 Observation，含错误恢复样本），QLoRA SFT 后接自研 GRPO 训练循环，并实现由格式、合法性、结构、部分执行匹配与最终正确性组成的 GRPO 稠密奖励实验链。}
+	\item \zh{\textbf{交互式自纠错：}设计 Direct SQL + 执行失败后 ReAct 多轮交互策略，在沙箱中执行草稿 SQL 并依据 Observation 继续修正；Spider 执行正确率达 78.6\%，较 ReAct SFT direct-only 的 71.7\% 提升 6.9pp，其中 Hard 难度题目提升 13.4\%。}
+	\item \zh{\textbf{进一步实验归因：}以 teacher-forced top-k 实验归因剩余错误：SFT 后 98\% 题目的 gold SQL 全程位于模型 top-50 候选内，瓶颈在解码时的候选选择；K=8 执行结果投票较单路采样 +6.5pp（CI95 [+4.6, +8.4]），验证该归因。}
 \end{itemize}
 
 \zh{\role{vLLM 在线推理调度优化\textnormal{\normalfont\itshape{ | Python / vLLM / GPU Serving}}}{2026.01 -- 2026.02}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{自适应调度：}针对长请求队头阻塞，在 vLLM V1 实现 token demotion、Aging-SJF/LAS、公平性、prefix locality 与输出背压，并依据 EMA RPS + hysteresis 在 FCFS/高压策略间切换；Qwen2.5-3B 混合长度压测中，高压 RPS 128/256 的 P95 TTFT 分别降低 58.3\%/40.2\%，代价为吞吐下降 2.5\%/3.9\%，低压旁路保持基线表现。}
+	\item \zh{\textbf{自适应调度：}针对高并发推理的队头阻塞与长尾时延，将 vLLM 默认 FCFS 调度器改造为 SJF 优先级 + 低压旁路的自适应 MLFQ 方案，Qwen2.5-3B 混合长度压测中，高压 RPS 128/256 的 P95 TTFT 分别降低 58.3\%/40.2\%，代价为吞吐下降 2.5\%/3.9\%，低压情况下保持基线表现。}
 \end{itemize}
 
 \section{\zh{科研经历}}
 \zh{\role{DBPecker: 分布式数据库复合异常诊断系统}{PVLDB 2025 · 共同一作}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{复合异常诊断：}构建跨节点 compound anomaly graph，以相关性加权 PageRank 融合节点影响力与多标签异常概率，输出按影响排序的 $\langle$node, anomaly$\rangle$ 序列；通过结构因果模型干预识别根因指标，覆盖跨 OS/数据库层的并发异常。}
+	\item \zh{\textbf{复合异常诊断：}构建跨节点 compound anomaly graph，以相关性加权 PageRank 融合节点影响力与多标签异常概率，输出按影响排序的 $\langle$node, anomaly$\rangle$ 序列；通过结构因果模型干预识别根因指标，覆盖跨 OS/数据库层的并发异常。结合 LLM 生成排障建议，在 OceanBase 集群上通过故障注入进行端到端验证。}
 \end{itemize}
 
 \section{\en{Skills}\zh{技能}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{大模型系统：}熟悉 SFT、GRPO、ReAct Agent、PyTorch、Megatron-LM、DeepSpeed 与 vLLM，有预训练问题定位和推理优化经验；}
-	\item \zh{\textbf{编程与工具：}熟练使用 C++/Python，了解 Java/Go/Rust；熟悉 Linux、Git、Docker、CMake；}
+	\item \zh{\textbf{大模型系统：}熟悉 Megatron-LM、DeepSpeed、SFT、GRPO、ReAct Agent、PyTorch、与 vLLM，有千卡预训练性能优化、支持和推理优化经验；}
+	\item \zh{\textbf{编程与工具：}熟练使用 C++/Python，以及 Claude Code、Codex 等工具；了解 Java/Go/Rust；熟悉 Linux、Git、Docker、CMake；}
 	\item \zh{\textbf{英语与荣誉：}雅思 7.5（阅读/听力 8.5）、六级 594；中国机器人及人工智能大赛百度 Apollo 自动驾驶仿真赛全国一等奖。}
 \end{itemize}
 
