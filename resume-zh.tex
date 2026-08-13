@@ -2,7 +2,9 @@
 
 \newcommand{\en}[1]{}
 \newcommand{\zh}[1]{#1}
-\geometry{top=0.25in}
+\geometry{left=0.55in,right=0.55in,top=0.65in,bottom=0.65in}
+\linespread{1.05}\selectfont
+\setlist[itemize]{itemsep=0.6ex,topsep=0.5em,leftmargin=1.25pc}
 
 \zh{
   \usepackage{xeCJK}
@@ -67,11 +69,15 @@
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{\textbf{超长序列并行：}为 Causal-ViT 实现 Context Parallel，为 GDN 集成 Ulysses All-to-All、为 MoDA 实现跨分片 halo 通信；在 H 系列 GPU 上将 CP8 单序列训练长度从 131K 扩展至 2M token，并完成 CP16、4M token 方案设计。}
 	\item \zh{\textbf{千卡训练稳定性：}支撑 Stage-2 1,024 GPU 长视频预训练（CP8$\times$DP128、GBS 2,048、单样本最高 2,048 帧/约 2M visual tokens）；定位 CP8 短视频空分片漏发反向 All-Reduce 导致 collective 序列失配与训练 hang，通过计算图锚点统一各 rank 通信序列，修复后在千卡训练中无复现。}
-	\item \zh{\textbf{MoDA 计算优化：}将 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧批处理，支持 batch size$>$1 并保持前反向对齐，单层/端到端提速 5.4$\times$/1.28$\times$；以 tile 分块和多前序 rank 直连 P2P halo 解耦显存工作集与序列长度，支持短序列与空分片。}
+	\item \zh{\textbf{MoDA 计算优化：}将 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧批处理，支持 batch size$>$1，单层/端到端提速 5.4$\times$/1.28$\times$；进一步设计 chunked packed MoDA，按 QKV、gate、attention 与 output 分阶段切分中间张量以降低显存峰值，并完成 BF16 单层 MoDA 前向、输入梯度与参数梯度对齐；鉴于 Muon 更新对微小数值扰动敏感，不以单步更新逐位一致为门槛，真实训练 eval 表现无下降。}
 	\item \zh{\textbf{混合样本 Packing：}设计 padding-free PackedVisionLayout，以 per-sample cu\_seqlens 和帧归属统一驱动 GDN All-to-All、MoDA halo 与损失归约，解除 CP 路径 batch size$=$1 约束，支持 batch 内图像--视频混训；BF16 数值、loss 与 grad norm 曲线对齐。}
 	\item \zh{\textbf{分布式优化器：}定位 Muon 与 ZeRO-1/2 reduce-scatter 的不兼容根因——分区参数矩阵缺少 Newton-Schulz 所需的完整归约梯度；向 DeepSpeed 上游提交切片定向传播与 owner rank 冗余更新修复，\textbf{PR\#8141 已合入 master}。}
 	\item \zh{\textbf{数值正确性：}定位 DeepSeek-V4-Flash fused RoPE 触发 BF16 训练 NaN 的根因，提交 Megatron-LM\#5317 最小复现并推进修复；追查权重转换 1e-3 偏差至 FP32 参数误降 BF16，修复后逐 tensor 对齐。}
 \end{itemize}
+
+\newpage
+\noindent{\small\textsc{吴清柳}\hfill 技术简历 · 第 2 页}\par
+\vspace{0.5ex}
 
 \zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05}}
 \zh{{\small\itshape 华为 · 计算产品线 | AI 工程师}\par}
@@ -100,7 +106,6 @@
 	\item \zh{\textbf{复合异常诊断：}提出图传播异常定位与结构因果根因排序方法，跨层、跨节点定位并发异常并结合 LLM 生成排障建议；在 OceanBase 集群上通过故障注入完成端到端验证。}
 \end{itemize}
 
-\enlargethispage{3\baselineskip}
 \section{\en{Skills}\zh{技能}}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{\textbf{大模型算法}:
