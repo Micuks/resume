@@ -7,23 +7,38 @@
 
 \zh{
   \usepackage{xeCJK}
-  % SimSun/Songti have no real bold/italic files; without this, \textbf
-  % silently falls back to regular weight (TU/SimSun(0)/b/n undefined).
-  \xeCJKsetup{AutoFakeBold=3.2, AutoFakeSlant=0.167}
+  % SimSun has no real bold/italic. FakeBold on upright makes body slightly
+  % heavier; larger FakeBold on bold keeps \textbf distinct.
+  \newcommand{\resumeCJKFaces}[1]{%
+    \setCJKmainfont{#1}[
+      UprightFont=*, BoldFont=*, ItalicFont=*, BoldItalicFont=*,
+      UprightFeatures={FakeBold=1.8},
+      BoldFeatures={FakeBold=4.6},
+      ItalicFeatures={FakeBold=1.8, FakeSlant=0.167},
+      BoldItalicFeatures={FakeBold=4.6, FakeSlant=0.167}]%
+    \setCJKsansfont{#1}[
+      UprightFont=*, BoldFont=*, ItalicFont=*, BoldItalicFont=*,
+      UprightFeatures={FakeBold=1.8},
+      BoldFeatures={FakeBold=4.6},
+      ItalicFeatures={FakeBold=1.8, FakeSlant=0.167},
+      BoldItalicFeatures={FakeBold=4.6, FakeSlant=0.167}]%
+    \setCJKmonofont{#1}[
+      UprightFont=*, BoldFont=*, ItalicFont=*, BoldItalicFont=*,
+      UprightFeatures={FakeBold=1.8},
+      BoldFeatures={FakeBold=4.6},
+      ItalicFeatures={FakeBold=1.8, FakeSlant=0.167},
+      BoldItalicFeatures={FakeBold=4.6, FakeSlant=0.167}]%
+  }
   \IfFontExistsTF{SimSun}{
-    \setCJKmainfont{SimSun}[AutoFakeBold=3.2, AutoFakeSlant=0.167]
-    \setCJKsansfont{SimSun}[AutoFakeBold=3.2, AutoFakeSlant=0.167]
-    \setCJKmonofont{SimSun}[AutoFakeBold=3.2, AutoFakeSlant=0.167]
+    \resumeCJKFaces{SimSun}
   }{
     \IfFontExistsTF{Songti SC}{
-      \setCJKmainfont{Songti SC}[AutoFakeBold=3.2, AutoFakeSlant=0.167]
-      \setCJKsansfont{Songti SC}[AutoFakeBold=3.2, AutoFakeSlant=0.167]
-      \setCJKmonofont{Songti SC}[AutoFakeBold=3.2, AutoFakeSlant=0.167]
+      \resumeCJKFaces{Songti SC}
     }{
       \IfFontExistsTF{Noto Serif CJK SC}{
-        \setCJKmainfont{Noto Serif CJK SC}
-        \setCJKsansfont{Noto Serif CJK SC}
-        \setCJKmonofont{Noto Serif CJK SC}
+        \setCJKmainfont{Noto Serif CJK SC}[UprightFont=* Medium, BoldFont=* Bold]
+        \setCJKsansfont{Noto Serif CJK SC}[UprightFont=* Medium, BoldFont=* Bold]
+        \setCJKmonofont{Noto Serif CJK SC}[UprightFont=* Medium, BoldFont=* Bold]
       }{
         \setCJKmainfont{FandolSong-Regular}[BoldFont=FandolSong-Bold]
         \setCJKsansfont{FandolSong-Regular}[BoldFont=FandolSong-Bold]
@@ -31,6 +46,12 @@
       }
     }
   }
+  \setmainfont{Latin Modern Roman}[
+    UprightFeatures={FakeBold=1.4},
+    ItalicFeatures={FakeBold=1.4}]
+  \setmonofont{Latin Modern Mono}[
+    UprightFeatures={FakeBold=1.4},
+    ItalicFeatures={FakeBold=1.4}]
 }
 
 \begin{document}
