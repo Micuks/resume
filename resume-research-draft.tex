@@ -1,0 +1,31 @@
+% Optional research branches intentionally excluded from the main resume.
+% Revisit only after the underlying work is fully mastered and interview-ready.
+\documentclass{resume}
+
+\usepackage{xeCJK}
+\IfFontExistsTF{Noto Serif CJK SC}{
+  \setCJKmainfont{Noto Serif CJK SC}
+}{
+  \setCJKmainfont{FandolSong-Regular}
+}
+\geometry{left=0.55in,right=0.55in,top=0.45in,bottom=0.45in}
+
+\begin{document}
+\pagestyle{empty}
+\small
+
+\section{候选支线经历（暂不进入主简历）}
+
+\role{ShardGram：面向 Muon 的分布式 Newton--Schulz\textnormal{\normalfont\itshape{ | PyTorch / FSDP2 / NCCL}}}{2026.07 -- 至今}
+\begin{itemize}
+  \item \textbf{无物化矩阵更新：}设计基于 Gram 递推、分片重启与多项式 owner rotation 的分布式正交化路径，避免在单 rank 重建完整梯度矩阵；通过 collective bucketing 消除逐矩阵 NCCL launch 瓶颈，在 8$\times$H800、1.2B 参数 FSDP2 训练中较 gather baseline 将优化器耗时降低 41\%、端到端 step time 降低 37\%，8 seeds 一致协议下通过非劣效性检验。
+  \item \textbf{数值与扩展性分析：}在条件数 $\kappa\le10^7$、并行度 $P\le64$ 的 288 组数值实验中，以一次额外 $s^2$ collective 的 sharded restart 将 FP32 最坏相对误差从 $1.7\times10^{-4}$ 降至 $4.0\times10^{-6}$；量化 placement-style 路径与 stock FSDP2 的框架改造权衡，明确 collective bucketing 为主要性能缺口。
+\end{itemize}
+
+\role{OEV：有损 KV Cache 复用的有限样本风险认证}{2026.06 -- 至今}
+\begin{itemize}
+  \item \textbf{风险可控复用：}以 LTT/共形校准学习请求级门控，在有限样本下为“有损 KV 复用或精确回退”提供答案 divergence 风险约束；在 matched admission budget 下，门控的 realized flip 约为随机复用的 1/3，并在 40/40 个依赖重划分中胜出。
+  \item \textbf{Serving 闭环：}在 vLLM + Mistral-7B 上实现真实 4-bit packed KV 路径，实测 cache capacity 为精确 KV 的 2.8247$\times$；离线门控在冻结分布上 admit 47.31\%、realized flip 8.18\%，但并发 serving replay 的决策一致率仅 65.63\%，据此定位执行分布漂移并要求目标流量重校准。
+\end{itemize}
+
+\end{document}

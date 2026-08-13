@@ -2,8 +2,8 @@
 
 \newcommand{\en}[1]{}
 \newcommand{\zh}[1]{#1}
-\geometry{left=0.55in,right=0.55in,top=0.30in,bottom=0.45in}
-\setlist[itemize]{itemsep=0.35ex,topsep=0.35em,leftmargin=1.25pc}
+\geometry{left=0.50in,right=0.50in,top=0.16in,bottom=0.25in}
+\setlist[itemize]{itemsep=0.15ex,topsep=0.15em,leftmargin=1.25pc}
 
 \zh{
   \usepackage{xeCJK}
@@ -32,14 +32,15 @@
 
 \begin{document}
 \pagestyle{empty}
-\small
+\fontsize{8.6pt}{10pt}\selectfont
 \emergencystretch=1.5em
+\vspace*{-0.8ex}
 
 \noindent
 \begin{minipage}[t]{0.74\textwidth}
-  {\Huge\scshape \en{Qingliu Wu}\zh{吴清柳}\par}
-  \vspace{1.25ex}
-  {\ttfamily\large
+  {\LARGE\scshape \en{Qingliu Wu}\zh{吴清柳}\par}
+  \vspace{0.6ex}
+  {\ttfamily\normalsize
     \phone{17353675760} \textperiodcentered\
     \email{wql@bupt.edu.cn} \textperiodcentered\
     \github[micuks]{https://github.com/micuks}\par
@@ -47,9 +48,9 @@
 \end{minipage}\hfill
 \begin{minipage}[t]{0.24\textwidth}
   \raggedleft
-  \includegraphics[width=2.6cm,clip,trim=0 57 0 0]{selfie.png}
+  \includegraphics[width=2.0cm,clip,trim=0 57 0 0]{selfie.png}
 \end{minipage}
-\vspace{0.6ex}
+\vspace{-0.2ex}
 
 \section{\en{Education}\zh{教育经历}}
 \en{\datedsubsection{\textbf{Beijing University of Posts and Telecommunications}, Master Student}{09/2023 -- Present}}
@@ -71,9 +72,8 @@
 	\item \zh{\textbf{长序列训练架构：}为 Causal-ViT 实现 Context Parallel，为 GDN 集成 Ulysses All-to-All、为 MoDA 实现跨分片 halo 通信；结合 padding-free \texttt{PackedVisionLayout} 统一图像--视频混训的分片与损失归约，解除 CP 路径 batch size$=$1 限制，将 CP8 单样本训练长度从 131K 扩展至 2M visual tokens。}
 	\item \zh{\textbf{千卡训练稳定性：}支撑 Stage-2 1,024 GPU 长视频预训练（CP8$\times$DP128、GBS 2,048、单样本最高 2,048 帧/约 2M visual tokens）；定位 CP8 短视频空分片漏发反向 All-Reduce 导致 collective 序列失配与训练 hang，通过计算图锚点统一各 rank 通信序列，修复后在千卡训练中无复现。}
 	\item \zh{\textbf{MoDA 计算优化：}将 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧批处理，支持 batch size$>$1，单层/端到端提速 5.4$\times$/1.28$\times$；进一步设计 chunked packed MoDA，按 QKV、gate、attention 与 output 分阶段切分中间张量以降低显存峰值，并完成 BF16 单层 MoDA 前向、输入梯度与参数梯度对齐；鉴于 Muon 更新对微小数值扰动敏感，不以单步更新逐位一致为门槛，真实训练 eval 表现无下降。}
-	\item \zh{\textbf{分布式数值验收：}构建真实训练流的 CP=1 golden reference，逐项比较 CP=N 的前向、输入梯度与全量权重梯度；BF16 全模型在真实多损失及 \texttt{sum} 压力路径下通过精度对齐，并在 8 GPU 上完成每步 4M token 长序列训练流稳定性验证。}
+	\item \zh{\textbf{工程正确性：}构建真实训练流的 CP=1 golden reference，逐项比较 CP=N 的前向、输入梯度与全量权重梯度；BF16 全模型在真实多损失及 \texttt{sum} 压力路径下通过对齐，并在 8 GPU 上完成每步 4M token 稳定性验证；同时定位 fused RoPE 触发 BF16 NaN 及权重转换误降精度问题。}
 	\item \zh{\textbf{分布式优化器：}定位 Muon 与 ZeRO-1/2 reduce-scatter 的不兼容根因——分区参数矩阵缺少 Newton-Schulz 所需的完整归约梯度；向 DeepSpeed 上游提交切片定向传播与 owner rank 冗余更新修复，\textbf{PR\#8141 已合入 master}。}
-	\item \zh{\textbf{数值正确性：}定位 DeepSeek-V4-Flash fused RoPE 触发 BF16 训练 NaN 的根因，提交 Megatron-LM\#5317 最小复现并推进修复；追查权重转换 1e-3 偏差至 FP32 参数误降 BF16，修复后逐 tensor 对齐。}
 \end{itemize}
 
 \zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05}}
@@ -90,49 +90,22 @@
 	\item \zh{\textbf{交互式自纠错：}设计 Direct SQL + 执行失败后 Interactive ReAct fallback，在沙箱中执行草稿 SQL 并依据 Observation 继续修正；Spider validation 200 题 Execution Match 达 78.6\%，较 ReAct SFT direct-only 的 71.7\% 提升 6.9pp。}
 \end{itemize}
 
-\newpage
-\noindent{\small\textsc{吴清柳}\hfill 技术简历 · 第 2 页}\par
-\vspace{0.5ex}
-\linespread{1.06}\selectfont
-\setlist[itemize]{itemsep=0.7ex,topsep=0.5em,leftmargin=1.25pc}
-
 \zh{\role{vLLM 在线推理调度优化\textnormal{\normalfont\itshape{ | Python / vLLM / GPU Serving}}}{2026.01 -- 2026.02}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{调度器设计：}针对长请求队头阻塞，在 vLLM V1 实现 token demotion、Aging-SJF/LAS、公平性、prefix locality 与输出背压，并依据 EMA RPS + hysteresis 在 FCFS/高压策略间切换；以 waiting queue、pending output tokens 和输入/输出 RPS 比值触发低压旁路。}
-	\item \zh{\textbf{性能权衡：}在 Qwen2.5-3B、500-request 混合长度压测中，高压 RPS 128/256 的 P95 TTFT 分别降低 58.3\%/40.2\%，代价为吞吐下降 2.5\%/3.9\%；低压旁路保持基线表现，并通过单因素复测识别不稳定策略、默认关闭实验开关。}
-\end{itemize}
-
-\zh{\role{ShardGram：面向 Muon 的分布式 Newton--Schulz\textnormal{\normalfont\itshape{ | PyTorch / FSDP2 / NCCL}}}{2026.07 -- 至今}}
-\begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{无物化矩阵更新：}设计基于 Gram 递推、分片重启与多项式 owner rotation 的分布式正交化路径，避免在单 rank 重建完整梯度矩阵；通过 collective bucketing 消除逐矩阵 NCCL launch 瓶颈，在 8$\times$H800、1.2B 参数 FSDP2 训练中较 gather baseline 将优化器耗时降低 41\%、端到端 step time 降低 37\%，8 seeds 一致协议下通过非劣效性检验。}
-	\item \zh{\textbf{数值与扩展性分析：}在条件数 $\kappa\le10^7$、并行度 $P\le64$ 的 288 组数值实验中，以一次额外 $s^2$ collective 的 sharded restart 将 FP32 最坏相对误差从 $1.7\times10^{-4}$ 降至 $4.0\times10^{-6}$；量化 placement-style 路径与 stock FSDP2 的框架改造权衡，明确 collective bucketing 为主要性能缺口。}
-\end{itemize}
-
-\zh{\role{OEV：有损 KV Cache 复用的有限样本风险认证}{2026.06 -- 至今}}
-\begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{风险可控复用：}以 LTT/共形校准学习请求级门控，在有限样本下为“有损 KV 复用或精确回退”提供答案 divergence 风险约束；在 matched admission budget 下，门控的 realized flip 约为随机复用的 1/3，并在 40/40 个依赖重划分中胜出。}
-	\item \zh{\textbf{Serving 闭环：}在 vLLM + Mistral-7B 上实现真实 4-bit packed KV 路径，实测 cache capacity 为精确 KV 的 2.8247$\times$；离线门控在冻结分布上 admit 47.31\%、realized flip 8.18\%，但并发 serving replay 的决策一致率仅 65.63\%，据此定位执行分布漂移并要求目标流量重校准。}
+	\item \zh{\textbf{自适应调度：}针对长请求队头阻塞，在 vLLM V1 实现 token demotion、Aging-SJF/LAS、公平性、prefix locality 与输出背压，并依据 EMA RPS + hysteresis 在 FCFS/高压策略间切换；Qwen2.5-3B 混合长度压测中，高压 RPS 128/256 的 P95 TTFT 分别降低 58.3\%/40.2\%，代价为吞吐下降 2.5\%/3.9\%，低压旁路保持基线表现。}
 \end{itemize}
 
 \section{\zh{科研经历}}
 \zh{\role{DBPecker: 分布式数据库复合异常诊断系统}{PVLDB 2025 · 共同一作}}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{\textbf{复合异常诊断：}构建跨节点 compound anomaly graph，以相关性加权 PageRank 融合节点影响力与多标签异常概率，输出按影响排序的 $\langle$node, anomaly$\rangle$ 序列；通过结构因果模型干预识别根因指标，覆盖跨 OS/数据库层的并发异常。}
-	\item \zh{\textbf{端到端系统：}集成 Prometheus/OBDiag 指标采集、Chaos Mesh 故障注入、实时可视化及 LLM 排障建议，在三节点 OceanBase 4.2.5.1 集群完成验证；成果发表于 \textbf{PVLDB 18(12)}，代码与数据开源。}
 \end{itemize}
 
 \section{\en{Skills}\zh{技能}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{大模型算法}:
-	熟悉 SFT 与 GRPO 强化学习后训练流程，有 ReAct Agent 设计、训练与评测实践;}
-	\item \zh{\textbf{大模型训练与推理}:
-	熟悉 PyTorch、Megatron-LM、DeepSpeed、vLLM，有预训练问题定位与推理优化实战经验;}
-	\item \zh{\textbf{编程语言与工具}:
-	熟练使用 C++/Python，了解 Java/Go/Rust；熟悉 Linux、Git、Docker、CMake;}
-	\item \zh{\textbf{英语水平}:
-	雅思 7.5（阅读 8.5、听力 8.5），大学英语六级 594 分。}
-	\item \zh{\textbf{其他荣誉}:
-	第 24 届中国机器人及人工智能大赛 · 百度 Apollo 自动驾驶虚拟仿真赛全国一等奖（2022）。}
+	\item \zh{\textbf{大模型系统：}熟悉 SFT、GRPO、ReAct Agent、PyTorch、Megatron-LM、DeepSpeed 与 vLLM，有预训练问题定位和推理优化经验；}
+	\item \zh{\textbf{编程与工具：}熟练使用 C++/Python，了解 Java/Go/Rust；熟悉 Linux、Git、Docker、CMake；}
+	\item \zh{\textbf{英语与荣誉：}雅思 7.5（阅读/听力 8.5）、六级 594；中国机器人及人工智能大赛百度 Apollo 自动驾驶仿真赛全国一等奖。}
 \end{itemize}
 
 \end{document}
