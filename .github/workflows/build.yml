@@ -39,14 +39,26 @@ jobs:
       - name: Build Chinese PDF
         run: make zh
 
-      - name: Upload PDFs
-        if: success()
+      - name: Name downloadable PDFs
+        run: |
+          cp resume-en.pdf Qingliu-Wu-Resume.pdf
+          cp resume-zh.pdf 吴清柳-简历-17353675760.pdf
+
+      # Single-file artifacts download as the PDF itself; a multi-file
+      # artifact is always zipped by GitHub.
+      - name: Upload English PDF
         uses: actions/upload-artifact@v4
         with:
-          name: resume-pdfs
-          path: |
-            resume-en.pdf
-            resume-zh.pdf
+          name: Qingliu-Wu-Resume
+          path: Qingliu-Wu-Resume.pdf
+          if-no-files-found: error
+
+      - name: Upload Chinese PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: 吴清柳-简历-17353675760
+          path: 吴清柳-简历-17353675760.pdf
+          if-no-files-found: error
 
       - name: Upload logs on failure
         if: failure()
