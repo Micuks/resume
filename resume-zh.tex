@@ -75,10 +75,6 @@
 	\item \zh{\textbf{数值正确性：}定位 DeepSeek-V4-Flash fused RoPE 触发 BF16 训练 NaN 的根因，提交 Megatron-LM\#5317 最小复现并推进修复；追查权重转换 1e-3 偏差至 FP32 参数误降 BF16，修复后逐 tensor 对齐。}
 \end{itemize}
 
-\newpage
-\noindent{\small\textsc{吴清柳}\hfill 技术简历 · 第 2 页}\par
-\vspace{0.5ex}
-
 \zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05}}
 \zh{{\small\itshape 华为 · 计算产品线 | AI 工程师}\par}
 \begin{itemize}[parsep=0.25ex]
@@ -86,6 +82,12 @@
 	\item \zh{\textbf{JNI 开销优化：}设计小批次状态操作预聚合，将多条读--改--写请求合并执行，降低跨语言调用开销。}
 	\item \zh{\textbf{性能收益：}在亿级 Nexmark 大状态子集上较 RocksDB StateBackend 基线平均吞吐提升 30\%，并通过 CDC 数据一致性校验。}
 \end{itemize}
+
+\newpage
+\noindent{\small\textsc{吴清柳}\hfill 技术简历 · 第 2 页}\par
+\vspace{0.5ex}
+\linespread{1.12}\selectfont
+\setlist[itemize]{itemsep=1.0ex,topsep=0.7em,leftmargin=1.25pc}
 
 \section{\zh{项目经历}}
 \zh{\role{SQLForge：执行反馈驱动的 Text-to-SQL Agent 后训练\textnormal{\normalfont\itshape{ | QLoRA / GRPO / vLLM}}}{2026.01 -- 2026.05}}

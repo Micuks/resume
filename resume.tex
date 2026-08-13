@@ -46,10 +46,6 @@
   \item \textbf{Numerical correctness:} Isolated fused RoPE as the source of DeepSeek-V4-Flash BF16 training NaNs and filed Megatron-LM\#5317 with a minimal repro; traced a $10^{-3}$ conversion drift to FP32 parameters being downcast to BF16 and restored tensor-wise parity.
 \end{itemize}
 
-\newpage
-\noindent{\small\textsc{Qingliu Wu}\hfill Technical Resume · Page 2}\par
-\vspace{0.5ex}
-
 \role{Flink Large-State Processing Optimization}{2026.03 -- 2026.05}
 {\small\itshape Huawei, Computing Product Line | AI Engineer\par}
 \begin{itemize}[parsep=0.25ex]
@@ -57,6 +53,12 @@
   \item \textbf{JNI overhead:} Pre-aggregated small state-operation batches and coalesced read-modify-write requests to reduce cross-language calls.
   \item \textbf{Performance:} Achieved 30\% higher average throughput than RocksDB StateBackend on a 100M-scale Nexmark subset and passed CDC consistency validation.
 \end{itemize}
+
+\newpage
+\noindent{\small\textsc{Qingliu Wu}\hfill Technical Resume · Page 2}\par
+\vspace{0.5ex}
+\linespread{1.12}\selectfont
+\setlist[itemize]{itemsep=1.0ex,topsep=0.7em,leftmargin=1.25pc}
 
 \section{Projects}
 \role{SQLForge: Execution-Feedback Post-training for Text-to-SQL Agents \textnormal{\normalfont\itshape{ | QLoRA / GRPO}}}{2026.01 -- 2026.05}
