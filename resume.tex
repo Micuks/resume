@@ -34,44 +34,48 @@
 
 \section{Internship Experience}
 
-\role{Keye Multimodal Model Pre-training Infrastructure \textnormal{\normalfont\itshape{ | Megatron}}}{2026.05 -- Present}
+\role{Qwen-Series Training Optimization \textnormal{\normalfont\itshape{ | FP8 Low-Precision Training / Megatron}}}{2026.10 -- Present}
+{\small\itshape Kuaishou, Algorithm Engine Dept., Training Engine Team | AI Infra\par}
+\begin{itemize}[parsep=0.25ex]
+  \item \textbf{FP8 training memory optimization:} For Qwen3.6-35B-A3B VLM training on 32 H100s at 131K sequence length, localized the 2.5 GiB that Megatron FP8 training costs over BF16 almost entirely to optimizer state. Accumulated CE weight gradients straight into the main gradient, released attention low-precision row/column buffers right after their last consumer with weight-column copies reused from a bounded cache, switched q\_layernorm and RoPE to recompute, and dropped one forward pass from GDN recompute --- all verified bitwise-identical --- cutting peak memory by 8.1\% (51,872 $\to$ 47,659 MiB) with step time essentially unchanged.
+  \item \textbf{Low-precision MoE operators:} Integrated a CuTe-DSL fused MoE kernel (MegaMoE) into Megatron's MoE dataflow and used Triton to merge the 203 fragmented kernels of FP8 expert-weight preparation (per-weight dequantize, stack, gate/up interleave, requantize) into batched ones, cutting kernel launches by $\sim$98\% for $-$4.32\% step time. With scheduling and cache reuse, the path went 11,280 $\to$ 10,420 ms/step ($-$7.6\%), 1.6\% ahead of BF16.
+  \item \textbf{Pipeline and parallel training:} Traced serial waiting on the last pipeline stage to extra output-head load compounded by a device-wide sync after P2P; removing that sync cut 32-GPU step time by 7.1\% and cross-stage wait 3.205 $\to$ 1.409 s. Also brought up Qwen3.8-27B Megatron-FSDP training on H200, overlapping parameter gather with vision-tower synchronization.
+\end{itemize}
+
+\role{Keye Multimodal Model Pre-training Infrastructure \textnormal{\normalfont\itshape{ | Megatron}}}{2026.05 -- 2026.10}
 {\small\itshape Kuaishou, Foundation Model \& Application Dept. | AI Infra\par}
 \begin{itemize}[parsep=0.25ex]
   \item \textbf{Long-context training architecture:} Implemented Context Parallel for Causal-ViT with Ulysses All-to-All for GDN and cross-shard MoDA halos. Unified mixed image-video sharding and loss reduction through a padding-free \texttt{PackedVisionLayout}, removed the CP batch-size-1 restriction, and scaled CP8 samples from 131K to 2M visual tokens.
   \item \textbf{1K-GPU training stability:} Supported Stage-2 training on 1,024 GPUs (CP8$\times$DP128, GBS 2,048, up to 2,048 frames/$\sim$2M visual tokens per sample). Traced a CP8 hang to empty short-video shards skipping a backward All-Reduce, anchored the graph to align collective sequences across ranks, and observed no recurrence in 1K-GPU training after the fix.
-  \item \textbf{MoDA compute optimization:} Replaced a launch-bound per-frame Python loop with cross-frame batching for 5.4$\times$/1.28$\times$ single-layer/end-to-end speedups. Further designed chunked packed MoDA to stage QKV, gate, attention, and output intermediates and reduce peak memory; aligned BF16 single-layer MoDA outputs, input gradients, and parameter gradients. Since Muon updates amplify small numerical perturbations, did not require bitwise-identical one-step updates; real-training evaluation showed no regression.
-  \item \textbf{Engineering correctness:} Built a real-training CP=1 golden reference and compared CP=N forward outputs, input gradients, and every weight gradient. A full BF16 model passed real multi-loss and \texttt{sum}-stress parity, followed by stable 8-GPU validation at 4M tokens per step; also isolated fused-RoPE BF16 NaNs and precision loss during checkpoint conversion.
+  \item \textbf{MoDA compute optimization:} Replaced a launch-bound per-frame Python loop with cross-frame batching for 5.4$\times$/1.28$\times$ single-layer/end-to-end speedups. Further designed chunked packed MoDA, staging QKV, gate, attention, and output intermediates against backward recompute for another 3.36$\times$ per layer while still training at 2M tokens; aligned BF16 single-layer outputs and forward/backward gradients, with no regression in real-training evaluation.
+  \item \textbf{Engineering correctness:} Built a real-training CP=1 golden reference and compared CP=N forward outputs, input gradients, and every weight gradient; a full BF16 model passed multi-loss and \texttt{sum}-stress parity plus 8-GPU validation at 4M tokens per step. Also isolated fused-RoPE BF16 NaNs and filed a minimal reproducer upstream (Megatron-LM\#5318).
   \item \textbf{Distributed optimizer:} Root-caused Muon incompatibility with ZeRO-1/2 reduce-scatter: partitioned matrices lacked the complete reduced gradients required by Newton-Schulz. Upstreamed owner-directed sliced propagation and redundant owner updates to DeepSpeed; \textbf{PR\#8141 merged into master}.
 \end{itemize}
 
 \role{Flink Large-State Processing Optimization}{2026.03 -- 2026.05}
 {\small\itshape Huawei, Computing Product Line | AI Engineer\par}
 \begin{itemize}[parsep=0.25ex]
-  \item \textbf{State-access pipeline:} For Flink 1.16.3 + RocksDB large-state workloads, built two-tier Value/Map caches and EMPTY/SINGLE MapState snapshots. Added mailbox batching, MultiGet prefetch, same-key local pre-aggregation, and whole-key MemTable/SST Bloom gates to reduce serialization, JNI crossings, and useless block reads.
-  \item \textbf{Cross-platform evaluation:} On 100M records, 15 Nexmark queries, and 8 TMs/16 slots, the full stack improved mean per-query throughput over RocksDB StateBackend by 61.77\% on x86 and 42.79\% on Kunpeng; a three-round matched-stack ablation measured an independent 11.08\% Bloom gain while retaining negative queries and preserving correctness through invalidation, barrier flushes, and RocksDB as source of truth.
+  \item \textbf{State-access pipeline:} For Flink 1.16.3 + RocksDB large-state workloads, built two-tier Value/Map caches and EMPTY/SINGLE MapState snapshots, then added mailbox batching, MultiGet prefetch, same-key local pre-aggregation, and whole-key MemTable/SST Bloom gates to cut serialization, JNI crossings, and useless block reads.
+  \item \textbf{Cross-platform evaluation:} On 100M records, 15 Nexmark queries, and 8 TMs/16 slots, the full stack improved mean per-query throughput over RocksDB StateBackend by 61.77\% on x86 and 42.79\% on Kunpeng; a matched-stack ablation measured an independent 11.08\% Bloom gain, with correctness preserved through invalidation, barrier flushes, and RocksDB as source of truth.
 \end{itemize}
 
 \section{Projects}
 \role{SQLForge: Execution-Feedback Post-training for Text-to-SQL Agents \textnormal{\normalfont\itshape{ | QLoRA / GRPO}}}{2026.01 -- 2026.05}
 \begin{itemize}[parsep=0.25ex]
-  \item \textbf{Execution-feedback post-training:} Generated multi-teacher ReAct trajectories and rewrote every observation with real SQLite results; trained ReAct SFT with DeepSpeed ZeRO-2 and built an experimental GRPO loop combining format, validity, structure, partial-execution, and final-correctness rewards.
+  \item \textbf{Execution-feedback post-training:} Generated multi-teacher ReAct trajectories with every observation rewritten from real SQLite results; trained ReAct SFT with DeepSpeed ZeRO-2 and built a GRPO loop combining format, validity, structure, partial-execution, and final-correctness rewards.
   \item \textbf{Interactive self-correction:} Designed Direct SQL with Interactive ReAct fallback after execution failure, executing drafts in a sandbox and continuing from observations; reached 78.6\% Execution Match on 200 Spider validation examples, +6.9pp over ReAct SFT direct-only (71.7\%).
 \end{itemize}
 
-\role{vLLM Online Inference Scheduling Optimization \textnormal{\normalfont\itshape{ | Python / vLLM / GPU Serving}}}{2026.01 -- 2026.02}
-\begin{itemize}[parsep=0.25ex]
-  \item \textbf{Adaptive scheduling:} Implemented token demotion, Aging-SJF/LAS fairness, prefix locality, output backpressure, and EMA-RPS/hysteresis switching between FCFS and high-pressure policies in vLLM V1. On mixed-length Qwen2.5-3B workloads, reduced P95 TTFT by 58.3\%/40.2\% at RPS 128/256, trading 2.5\%/3.9\% throughput while preserving low-load performance through bypass.
-\end{itemize}
 
 \section{Research Experience}
 \role{DBPecker: Compound Anomaly Diagnosis for Distributed Databases}{PVLDB 2025 \textperiodcentered\ Co-first Author}
 \begin{itemize}[parsep=0.25ex]
-  \item \textbf{Compound anomaly diagnosis:} Built a cross-node compound-anomaly graph and used correlation-weighted PageRank to combine node influence with multi-label anomaly probabilities into ranked $\langle$node, anomaly$\rangle$ outputs; structural-causal interventions identify root-cause metrics across OS and database layers.
+  \item \textbf{Compound anomaly diagnosis:} Built a cross-node compound-anomaly graph and used correlation-weighted PageRank to rank $\langle$node, anomaly$\rangle$ pairs by node influence and multi-label anomaly probability; structural-causal interventions identify root-cause metrics across OS and database layers.
 \end{itemize}
 
 \section{Skills}
 \begin{itemize}[parsep=0.25ex]
-  \item \textbf{LLM Systems}: SFT, GRPO, ReAct Agents, PyTorch, Megatron-LM, DeepSpeed, and vLLM; pre-training debugging and inference optimization.
+  \item \textbf{LLM Systems}: Megatron-LM, DeepSpeed, Transformer Engine FP8, Triton, PyTorch, vLLM; SFT, GRPO, ReAct Agents; 1K-GPU pre-training performance/memory and kernel optimization.
   \item \textbf{Languages \& Tools}: C++/Python; familiar with Java/Go/Rust; Linux, Git, Docker, and CMake.
   \item \textbf{English \& Award}: IELTS 7.5 (Reading/Listening 8.5), CET-6 594; National First Prize in Baidu Apollo Autonomous Driving Simulation.
 \end{itemize}
