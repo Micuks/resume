@@ -30,6 +30,7 @@ jobs:
             texlive-fonts-extra \
             texlive-plain-generic \
             fonts-noto-cjk \
+            fonts-noto-cjk-extra \
             fonts-font-awesome
           sudo fc-cache -fv
 
