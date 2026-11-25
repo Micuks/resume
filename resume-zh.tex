@@ -87,16 +87,16 @@
 
 \section{\zh{实习经历}}
 
-\zh{\role{Qwen 系列大模型训练优化 · FP8 低精度训练 / Megatron}{2026.10 -- 至今}}
-\zh{{\small\itshape 快手 · 算法引擎部 训练引擎组 | AI Infra}\par}
+\zh{\role{Qwen3.8-Next / Qwen3.6 训练引擎优化 · FP8 / MegaMoE / Megatron}{2026.10 -- 至今}}
+\zh{{\small\itshape 快手 · 算法引擎部\ 训练引擎组 | AI Infra}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{FP8 低精度训练显存优化：}面向 Qwen3.6-35B-A3B VLM 的 32 卡 H100、131K 长序列训练，定位 Megatron FP8 训练相比 BF16 多出的 2.5 GiB 几乎全部来自优化器状态；据此定位并实现 CE 权重梯度直接累加进主梯度、attention 低精度 row/col buffer在最后一个消费者后提前释放且权重列副本有界缓存复用、q\_layernorm 与 RoPE 改为重算、GDN 复算过程减少一次前向等优化，均验证逐位一致，峰值显存下降 8.1\%（51,872 $\to$ 47,659 MiB），同时训练单步耗时基本持平。}
-	\item \zh{\textbf{MoE 低精度算子优化：}将 CuTe DSL MoE 融合算子（MegaMoE）接入 Megatron 的 MoE 数据流，用 Triton 把 FP8 专家权重准备中逐权重反量化、拼接、gate/up 行交错、再量化的 203 个碎 kernel 合并为批量算子，kernel launch 数降低约 98\%、端到端步时 $-$4.32\%；配合调度优化与缓存复用，该路线单步由 11,280 降至 10,420 ms（$-$7.6\%），反超 BF16 基线 1.6\%。}
-	\item \zh{\textbf{流水线与并行训练支撑：}定位流水线末级因额外输出头负载叠加 P2P 后的全设备同步而放大的串行等待，去掉该同步后 32 卡步时降低 7.1\%、跨 stage 通信等待由 3.205 s 降至 1.409 s；支撑 Qwen3.8-27B 的 Megatron-FSDP H200 训练，并实现重叠参数聚合与视觉塔同步。}
+	\item \zh{\textbf{FP8 显存与生命周期治理：}面向 Qwen3.8-Next / Qwen3.6（GDN+Attn+256 专家 MoE+MTP）262K FP8 训练，解决布局错配：非 MoE 权重列现转即释并跳过 \texttt{post\_all\_gather} 转置、\texttt{O-proj} 双量化断 BF16 保活、切 2 GiB 专家死列；配合 RoPE 本地切分、GDN+MoE 整层 checkpoint 与 Attn 轻量重算，35B-A3B 32 卡 H200 同布局峰值显存 $-$26.0\%（69.7 $\to$ 51.6 GiB）。}
+	\item \zh{\textbf{MegaMoE 全链路接入与优化：}将 CuTe DSL 融合核 MegaMoE 接入 Qwen3.6 并向 Qwen3.8-Next 迁移：把 \texttt{fc1} 8 行交错前移至 Optimizer 步末原地直量化（保留 1B FP8 AG，前向零拷贝视图消灭每步 160+ 次重排量化）；结合前反向工作区共享、Triton 紧凑路由、\texttt{wgrad} epilogue 直写 \texttt{main\_grad}、纯 GPU 溢出检查与 Triton 分块转置，消同步并省数 GiB 缓冲。}
+	\item \zh{\textbf{长序列算子融合与自研内核：}248K 词表单遍 CE 直写 \texttt{main\_grad}（1.62$\times$）并做 SFT 有效行压缩与 CP 均衡；融合 QK-Norm+partial mRoPE（3.09$\times$），优化 GDN 重算复用/\texttt{tile16}/AllToAll 融合；接入自研 SM90 两阶段 TMA 注意力反向核（较 FA3 快 15\%--21\%，\texttt{H=1} 省 1.1 GiB），32 卡 262K 23 步精度对齐、同布局步时 $-$15.9\%（23.43 $\to$ 19.72 s）。}
 \end{itemize}
 
 \zh{\role{多模态大模型 Keye 预训练 · Megatron/DeepSpeed 框架优化}{2026.05 -- 2026.10}}
-\zh{{\small\itshape 快手 · 基础大模型与应用部 | AI Infra}\par}
+\zh{{\small\itshape 快手 · 可灵 AI 事业部 | AI Infra}\par}
 \begin{itemize}[parsep=0.25ex]
 	\item \zh{\textbf{实现长序列训练架构：}为 Causal-ViT 实现 Context Parallel，为 GDN 实现 Ulysses All-to-All、为 MoDA 时序注意力实现跨分片 halo 通信；支持图片--视频混训，实现两者的混训的分片与损失归约，解除 CP 路径 batch size$=$1 限制，将 CP8 单样本训练长度从 131K 扩展至 2M visual tokens。}
 	\item \zh{\textbf{支撑千卡训练稳定性：}支撑 Stage-2 千卡长视频预训练（CP8$\times$DP128、GBS 2,048、单样本最高 2,048 帧/约 2M visual tokens）；定位 CP8 短视频空分片漏发反向 All-Reduce 导致 collective 序列失配与训练 hang，通过计算图锚点统一各 rank 通信序列，修复后在千卡训练中无复现。}
