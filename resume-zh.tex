@@ -153,39 +153,38 @@
 \zh{\role{Qwen3.8-Next / Qwen3.6 训练引擎优化 · FP8 / MegaMoE / Megatron}{2026.10 -- 至今}}
 \zh{{\small\itshape 快手 · 算法引擎部\ 训练引擎组 | AI Infra}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{FP8 显存与生命周期治理：}面向 Qwen3.8-Next / Qwen3.6（GDN+Attn+256 专家 MoE+MTP）262K FP8 训练，解决布局错配：非 MoE 权重列现转即释并跳过 \texttt{post\_all\_gather} 转置、\texttt{O-proj} 双量化断 BF16 保活、切 2 GiB 专家死列；配合 RoPE 本地切分、GDN+MoE 整层 checkpoint 与 Attn 轻量重算，35B-A3B 32 卡 H200 同布局峰值显存 $-$26.0\%（69.7 $\to$ 51.6 GiB）。}
-	\item \zh{\textbf{MegaMoE 全链路接入与优化：}将 CuTe DSL 融合核 MegaMoE 接入 Qwen3.6 并向 Qwen3.8-Next 迁移：把 \texttt{fc1} 8 行交错前移至 Optimizer 步末原地直量化（保留 1B FP8 AG，前向零拷贝视图消灭每步 160+ 次重排量化）；结合前反向工作区共享、Triton 紧凑路由、\texttt{wgrad} epilogue 直写 \texttt{main\_grad}、纯 GPU 溢出检查与 Triton 分块转置，消同步并省数 GiB 缓冲。}
-	\item \zh{\textbf{长序列算子融合与自研内核：}248K 词表单遍 CE 直写 \texttt{main\_grad}（1.62$\times$）并做 SFT 有效行压缩与 CP 均衡；融合 QK-Norm+partial mRoPE（3.09$\times$），优化 GDN 重算复用/\texttt{tile16}/AllToAll 融合；接入自研 SM90 两阶段 TMA 注意力反向核（较 FA3 快 15\%--21\%，\texttt{H=1} 省 1.1 GiB），32 卡 262K 23 步精度对齐、同布局步时 $-$15.9\%（23.43 $\to$ 19.72 s）。}
+	\item \zh{\textbf{Megatron FP8 训练优化：}面向 Qwen3.8-Next / Qwen3.6（GDN+Attn+MoE+MTP）262K 长序列训练，按 Hopper FP8 TN 布局管理 \texttt{X/dY/W} 生命周期：非 MoE \texttt{W\_col} 仅在 \texttt{dgrad} 前由 \texttt{W\_row} 免重量化转置、用完即释放，并跳过 \texttt{post\_all\_gather} 无效转置；\texttt{O-proj} 前向一次量化生成 \texttt{x\_row/x\_col}，反向仅保存 FP8 \texttt{x\_col}，不再保存 BF16 输入；删除 MegaMoE 不读取的专家 \texttt{W\_col}，再省约 2 GiB。配合 RoPE 按 CP rank 本地切分与 Attn 轻量重算，GDN+MoE 改为整层单 checkpoint，重算量基本不变、单层激活 168.6 $\to$ 4.2 MiB（$-$97.5\%）；35B-A3B 32 卡 H200 同布局峰值显存 $-$26.0\%（69.7 $\to$ 51.6 GiB）。}
+	\item \zh{\textbf{MegaMoE 全链路接入与优化：}将 CuTe DSL 融合核 MegaMoE 接入 Qwen3.6 并迁移至 Qwen3.8-Next：将 FP32 主权重、FP8 参数与 \texttt{main\_grad} 统一为 \texttt{interleave8} 布局，Adam 更新后原地量化；跨 DP 的 $128{\times}128$ 量化块先 MAX 归约统一 scale，专家逆序注册抵消 DDP 建桶倒序，前向以连续 3D 视图零拷贝接入，去除每步 160+ 次拼接重量化（链路累计步时 $-$555 ms、显存 $-$352 MiB）；以 \texttt{as\_strided} 将连续等距的 DDP 梯度桶构造为 3D 视图，\texttt{wgrad} epilogue 跨 microbatch 直接累加 \texttt{main\_grad}，去除 128 个 cast/add kernel 与 384 MiB 临时梯度；合并前反向工作区，以方向私有 4B 备份槽保存/恢复 NVLink barrier 相位避免死锁，配合 Triton 紧凑路由、GPU 溢出检查与分块转置（48 $\to$ 6.5 ms），这部分合计步时约 $-$0.34 s、单卡峰值显存 $-$2.5 GiB。}
+	\item \zh{\textbf{长序列算子融合与自研内核：}为 248K 大词表实现单遍 cross-entropy，梯度写回 \texttt{main\_grad}（1.62$\times$），并做 SFT 有效行压缩与 CP 均衡；融合 QK-Norm 与 partial mRoPE（3.09$\times$），优化 GDN 重算复用、\texttt{tile16} 与 AllToAll 融合；接入自研 SM90 两阶段 TMA 注意力反向核（较 FA3 快 15\%--21\%，\texttt{H=1} 时省 1.1 GiB），32 卡 262K 23 步精度对齐，同布局步时 $-$15.9\%（23.43 $\to$ 19.72 s）。}
 \end{itemize}
 
 \zh{\role{多模态大模型 Keye 预训练 · Megatron/DeepSpeed 框架优化}{2026.05 -- 2026.10}}
 \zh{{\small\itshape 快手 · 可灵 AI 事业部 | AI Infra}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{实现长序列训练架构：}为 Causal-ViT 实现 Context Parallel，为 GDN 实现 Ulysses All-to-All、为 MoDA 时序注意力实现跨分片 halo 通信；支持图片--视频混训，实现两者的混训的分片与损失归约，解除 CP 路径 batch size$=$1 限制，将 CP8 单样本训练长度从 131K 扩展至 2M visual tokens。}
-	\item \zh{\textbf{支撑千卡训练稳定性：}支撑 Stage-2 千卡长视频预训练（CP8$\times$DP128、GBS 2,048、单样本最高 2,048 帧/约 2M visual tokens）；定位 CP8 短视频空分片漏发反向 All-Reduce 导致 collective 序列失配与训练 hang，通过计算图锚点统一各 rank 通信序列，修复后在千卡训练中无复现。}
-	\item \zh{\textbf{MoDA 计算性能优化：}将 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧批处理，支持 batch size$>$1，单层/端到端提速 5.4$\times$/1.28$\times$；进一步设计 chunked packed MoDA，按 QKV、gate、attention 与 output 分阶段切分中间张量配合反向传播重算，在显存峰值小幅增加，仍旧支持 2M 序列训练的同时，单层提速 3.36x，并完成 BF16 单层 MoDA 前反梯度对齐，真实训练 eval 表现无下降。}
-	\item \zh{\textbf{分布式优化器：}定位 Muon 与 ZeRO-1/2 reduce-scatter 的不兼容根因——分区参数矩阵缺少 Newton-Schulz 所需的完整归约梯度；向 DeepSpeed 上游提交切片定向传播与 owner rank 冗余更新修复，\textbf{PR\#8141 已合入 master}。}
-	\item \zh{\textbf{工程正确性：}保障 DeepSeek-V4-Flash 预训练数值正确性：定位 fused RoPE 触发 BF16 训练 NaN 的根因，提交含最小复现的上游 issue（Megatron-LM\#5318）并推进修复。}
+	\item \zh{\textbf{实现长序列训练架构：}为 Causal-ViT 实现 Context Parallel，为 GDN 实现 Ulysses All-to-All、为 MoDA 时序注意力实现跨分片 halo 通信；支持图片--视频混训分片与损失归约，解除 CP 路径 batch size$=$1 限制，CP8 单样本训练长度从 131K 扩展至 2M visual tokens。}
+	\item \zh{\textbf{支撑千卡训练稳定性：}支撑 Stage-2 千卡长视频预训练（CP8$\times$DP128、GBS 2,048、单样本最高 2,048 帧/约 2M visual tokens）；定位 CP8 短视频空分片漏发反向 All-Reduce 导致 collective 序列失配与训练 hang，以计算图锚点统一各 rank 通信序列，修复后无复现。}
+	\item \zh{\textbf{MoDA 计算性能优化：}将 launch-bound、GPU 空转约 80\% 的逐帧 Python 循环重构为跨帧批处理，支持 batch size$>$1，单层/端到端提速 5.4$\times$/1.28$\times$；进一步设计 chunked packed MoDA，按 QKV、gate、attention 与 output 分阶段切分中间张量配合反向重算，在显存峰值仅小幅增加、仍支持 2M 序列训练的前提下单层再提速 3.36$\times$，并完成 BF16 单层前反向梯度对齐，真实训练 eval 表现无下降。}
+	\item \zh{\textbf{分布式优化器：}定位 Muon 与 ZeRO-1/2 reduce-scatter 不兼容的根因：分区参数缺少 Newton-Schulz 所需完整归约梯度；向 DeepSpeed 上游提交切片定向传播与 owner rank 冗余更新修复，\textbf{PR\#8141 已合入 master}。}
 \end{itemize}
 
 \zh{\role{Flink 大状态计算调优}{2026.03 -- 2026.05}}
 \zh{{\small\itshape 华为 · 计算产品线 | AI 工程师}\par}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{状态访问链路优化：}面向 Flink 1.16.3 + RocksDB 大状态场景，构建 Value/Map 双层堆内缓存与 MapState EMPTY/SINGLE 快照；进一步以 Mailbox 攒批驱动 MultiGet 异步预取和同 key 本地预聚合，并在 MemTable/SST 前加入 whole-key Bloom miss gate，系统性减少序列化、JNI 往返与无效读取。}
-	\item \zh{\textbf{在鲲鹏平台取得显著性能收益：}在亿级数据量下对 Nexmark 评测中，较 RocksDB StateBackend 的逐 Query 平均吞吐在鲲鹏平台提升 50\%，并通过 CDC 数据一致性检验。}
+	\item \zh{\textbf{状态访问链路优化：}面向 Flink 1.16.3 + RocksDB 大状态场景，构建 Value/Map 双层堆内缓存与 MapState EMPTY/SINGLE 快照；进一步以 Mailbox 攒批驱动 MultiGet 异步预取和同 key 本地预聚合，并在 MemTable/SST 前加入 whole-key Bloom miss gate，减少序列化、JNI 往返与无效读取。}
+	\item \zh{\textbf{在鲲鹏平台取得显著性能收益：}在亿级数据量的 Nexmark 评测中，逐 Query 平均吞吐较 RocksDB StateBackend 在鲲鹏平台提升 50\%，并通过 CDC 数据一致性检验。}
 \end{itemize}
 
 \section{\zh{项目经历}}
 \zh{\role{SQLForge：执行反馈驱动的 Text-to-SQL Agent 后训练\textnormal{\normalfont\itshape{ | QLoRA / GRPO / vLLM}}}{2026.01 -- 2026.05}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{执行反馈后训练与交互式自纠错：}构建 Agent 后训练管线——生成多 teacher ReAct 轨迹并用真实执行结果回填 Observation，QLoRA SFT 后接自研 GRPO 循环与格式/合法性/结构/部分执行/最终正确性稠密奖励；推理侧设计 Direct SQL + 执行失败后 ReAct 多轮交互，在沙箱中执行草稿 SQL 并依据 Observation 修正，Spider 执行正确率 78.6\%，较 ReAct SFT direct-only 的 71.7\% 提升 6.9pp（Hard 难度 +13.4\%）。}
+	\item \zh{\textbf{执行反馈后训练与交互式自纠错：}构建 Agent 后训练管线——生成多 teacher ReAct 轨迹并用真实执行结果回填 Observation，QLoRA SFT 后接自研 GRPO 循环与格式/合法性/结构/部分执行/最终正确性稠密奖励；推理侧设计 Direct SQL + 执行失败后 ReAct 多轮交互，沙箱执行草稿 SQL 并按 Observation 修正，Spider 执行正确率 78.6\%，较 ReAct SFT direct-only 71.7\% 提升 6.9pp（Hard 难度 +13.4\%）。}
 \end{itemize}
 
 
 \section{\zh{科研经历}}
 \zh{\role{DBPecker: 分布式数据库复合异常诊断系统}{PVLDB 2025 · 共同一作}}
 \begin{itemize}[parsep=0.25ex]
-	\item \zh{\textbf{复合异常诊断：}构建跨节点 compound anomaly graph，以相关性加权 PageRank 融合节点影响力与多标签异常概率，输出按影响排序的 $\langle$node, anomaly$\rangle$ 序列；通过结构因果模型干预识别跨 OS/数据库层根因指标，并在 OceanBase 集群以故障注入完成端到端验证。}
+	\item \zh{\textbf{复合异常诊断：}构建跨节点 compound anomaly graph，以相关性加权 PageRank 融合节点影响力与多标签异常概率，输出按影响排序的 $\langle$node, anomaly$\rangle$ 序列；通过结构因果模型干预识别跨 OS/数据库层根因指标，并在 OceanBase 集群故障注入完成端到端验证。}
 \end{itemize}
 
 \section{\en{Skills}\zh{技能}}
