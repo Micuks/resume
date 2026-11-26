@@ -1,6 +1,12 @@
+TEX_EXTRA_PATH := /Library/TeX/texbin:$(HOME)/Library/TinyTeX/bin/universal-darwin:$(HOME)/Library/TinyTeX/bin/x86_64-darwin:$(HOME)/.TinyTeX/bin/x86_64-linux:$(HOME)/.TinyTeX/bin/aarch64-linux
+PATH := $(PATH):$(TEX_EXTRA_PATH)
+export PATH
+export MKTEXTFM := 0
+
+XELATEX_BIN := $(shell PATH="$(PATH)" command -v xelatex 2>/dev/null || echo xelatex)
 TEX_EN = resume.tex
 TEX_ZH = resume-zh.tex
-XELATEX = xelatex -interaction=nonstopmode -halt-on-error -shell-escape
+XELATEX = $(XELATEX_BIN) -interaction=nonstopmode -halt-on-error -shell-escape
 PREVIEW_DIR = preview
 DPI = 200
 

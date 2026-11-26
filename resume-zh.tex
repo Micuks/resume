@@ -7,51 +7,114 @@
 
 \zh{
   \usepackage{xeCJK}
-  % SimSun has no real bold/italic. FakeBold on upright makes body slightly
-  % heavier; larger FakeBold on bold keeps \textbf distinct.
-  \newcommand{\resumeCJKFaces}[1]{%
-    \setCJKmainfont{#1}[
+  % Helper to set main/sans/mono CJK fonts consistently without triplicating options.
+  \newcommand{\resumeCJKFaces}[2]{%
+    \setCJKmainfont{#1}[#2]%
+    \setCJKsansfont{#1}[#2]%
+    \setCJKmonofont{#1}[#2]%
+  }
+  % SimSun has no real bold/italic; FakeBold on upright matches Medium body weight,
+  % while stronger FakeBold on bold keeps \textbf distinct.
+  \newcommand{\resumeCJKFakeBoldFaces}[1]{%
+    \resumeCJKFaces{#1}{%
       UprightFont=*, BoldFont=*, ItalicFont=*, BoldItalicFont=*,
       UprightFeatures={FakeBold=1.8},
       BoldFeatures={FakeBold=4.6},
-      ItalicFeatures={FakeBold=1.8, FakeSlant=0.167},
-      BoldItalicFeatures={FakeBold=4.6, FakeSlant=0.167}]%
-    \setCJKsansfont{#1}[
-      UprightFont=*, BoldFont=*, ItalicFont=*, BoldItalicFont=*,
-      UprightFeatures={FakeBold=1.8},
-      BoldFeatures={FakeBold=4.6},
-      ItalicFeatures={FakeBold=1.8, FakeSlant=0.167},
-      BoldItalicFeatures={FakeBold=4.6, FakeSlant=0.167}]%
-    \setCJKmonofont{#1}[
-      UprightFont=*, BoldFont=*, ItalicFont=*, BoldItalicFont=*,
-      UprightFeatures={FakeBold=1.8},
-      BoldFeatures={FakeBold=4.6},
-      ItalicFeatures={FakeBold=1.8, FakeSlant=0.167},
-      BoldItalicFeatures={FakeBold=4.6, FakeSlant=0.167}]%
+      ItalicFeatures={FakeBold=1.8},
+      BoldItalicFeatures={FakeBold=4.6}}%
   }
   \IfFontExistsTF{SimSun}{
-    \resumeCJKFaces{SimSun}
+    \resumeCJKFakeBoldFaces{SimSun}
   }{
     \IfFontExistsTF{Songti SC}{
-      \resumeCJKFaces{Songti SC}
+      \resumeCJKFaces{Songti SC}{%
+        UprightFont=* Regular, BoldFont=* Bold,
+        ItalicFont=* Regular, BoldItalicFont=* Bold,
+        UprightFeatures={FakeBold=1.2},
+        ItalicFeatures={FakeBold=1.2}}
     }{
-      \IfFontExistsTF{Noto Serif CJK SC}{
-        \setCJKmainfont{Noto Serif CJK SC}[UprightFont=* Medium, BoldFont=* Bold]
-        \setCJKsansfont{Noto Serif CJK SC}[UprightFont=* Medium, BoldFont=* Bold]
-        \setCJKmonofont{Noto Serif CJK SC}[UprightFont=* Medium, BoldFont=* Bold]
+      \IfFontExistsTF{Noto Serif CJK SC Medium}{
+        \resumeCJKFaces{Noto Serif CJK SC}{%
+          UprightFont=* Medium, BoldFont=* Bold,
+          ItalicFont=* Medium, BoldItalicFont=* Bold}
       }{
-        \setCJKmainfont{FandolSong-Regular}[BoldFont=FandolSong-Bold]
-        \setCJKsansfont{FandolSong-Regular}[BoldFont=FandolSong-Bold]
-        \setCJKmonofont{FandolSong-Regular}[BoldFont=FandolSong-Bold]
+        \IfFontExistsTF{Noto Serif CJK SC}{
+          \resumeCJKFaces{Noto Serif CJK SC}{%
+            UprightFont=* Regular, BoldFont=* Bold,
+            ItalicFont=* Regular, BoldItalicFont=* Bold,
+            UprightFeatures={FakeBold=1.2},
+            ItalicFeatures={FakeBold=1.2}}
+        }{
+          \resumeCJKFaces{FandolSong-Regular}{%
+            Extension=.otf,
+            UprightFont=FandolSong-Regular, BoldFont=FandolSong-Bold,
+            ItalicFont=FandolSong-Regular, BoldItalicFont=FandolSong-Bold,
+            UprightFeatures={FakeBold=1.2},
+            ItalicFeatures={FakeBold=1.2}}
+        }
       }
     }
   }
-  \setmainfont{Latin Modern Roman}[
-    UprightFeatures={FakeBold=1.4},
-    ItalicFeatures={FakeBold=1.4}]
-  \setmonofont{Latin Modern Mono}[
-    UprightFeatures={FakeBold=1.4},
-    ItalicFeatures={FakeBold=1.4}]
+  % Load TeX Live's bundled Latin Modern OpenType fonts by filename (kpathsea)
+  % so macOS CoreText doesn't fail on OS font-name lookup, matching tulmr/tulmtt.
+  \setmainfont{lmroman10-regular}[
+    Extension = .otf,
+    UprightFont = lmroman10-regular,
+    BoldFont = lmroman10-bold,
+    ItalicFont = lmroman10-italic,
+    BoldItalicFont = lmroman10-bolditalic,
+    SmallCapsFont = lmromancaps10-regular,
+    UprightFeatures = {
+      FakeBold = 1.4,
+      SizeFeatures = {
+        {Size={-5.5},    Font=lmroman5-regular},
+        {Size={5.5-6.5}, Font=lmroman6-regular},
+        {Size={6.5-7.5}, Font=lmroman7-regular},
+        {Size={7.5-8.5}, Font=lmroman8-regular},
+        {Size={8.5-9.5}, Font=lmroman9-regular},
+        {Size={9.5-11},  Font=lmroman10-regular},
+        {Size={11-15},   Font=lmroman12-regular},
+        {Size={15-},     Font=lmroman17-regular}
+      }
+    },
+    BoldFeatures = {
+      SizeFeatures = {
+        {Size={-5.5},    Font=lmroman5-bold},
+        {Size={5.5-6.5}, Font=lmroman6-bold},
+        {Size={6.5-7.5}, Font=lmroman7-bold},
+        {Size={7.5-8.5}, Font=lmroman8-bold},
+        {Size={8.5-9.5}, Font=lmroman9-bold},
+        {Size={9.5-11},  Font=lmroman10-bold},
+        {Size={11-},     Font=lmroman12-bold}
+      }
+    },
+    ItalicFeatures = {
+      FakeBold = 1.4,
+      SizeFeatures = {
+        {Size={-7.5},    Font=lmroman7-italic},
+        {Size={7.5-8.5}, Font=lmroman8-italic},
+        {Size={8.5-9.5}, Font=lmroman9-italic},
+        {Size={9.5-11},  Font=lmroman10-italic},
+        {Size={11-},     Font=lmroman12-italic}
+      }
+    },
+    SmallCapsFeatures = {FakeBold = 1.4}]
+  \setmonofont{lmmono10-regular}[
+    Extension = .otf,
+    UprightFont = lmmono10-regular,
+    BoldFont = lmmonolt10-bold,
+    ItalicFont = lmmono10-italic,
+    BoldItalicFont = lmmonolt10-boldoblique,
+    UprightFeatures = {
+      FakeBold = 1.4,
+      SizeFeatures = {
+        {Size={-8.5},    Font=lmmono8-regular},
+        {Size={8.5-9.5}, Font=lmmono9-regular},
+        {Size={9.5-11},  Font=lmmono10-regular},
+        {Size={11-},     Font=lmmono12-regular}
+      }
+    },
+    ItalicFeatures = {FakeBold = 1.4}]
 }
 
 \begin{document}
